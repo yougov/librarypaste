@@ -1,17 +1,9 @@
 <%inherit file="base.html"/>
 
 
-<form method="post">
+<form method="post" enctype="multipart/form-data">
 % if lexers:
-<div class="form_input_row">
-	<label for="fmt">Formatting:</label>
-	<select name="fmt" id="fmt">
-		<option value="_">None (Plain Text)</option>
-		% for lex_desc, lex_id in lexers:
-		    <option value="${lex_id}">${lex_desc}</option>
-		% endfor
-	</select>
-</div>
+
 % else:
 <input type="hidden" name="fmt" value="_" />
 % endif
@@ -21,9 +13,25 @@
 	<input type="text" width="15" name="nick" value="${pre_nick}" id="nick"/>
 </div>
 
-<p><strong>Code</strong></p>
+<h2>Select a file</h2>
+<div class="form_input_row"
+	<label for="file">File:</label>
+	<input type="file" name="file" id="file"/>
+</div>
+
+<h2>Or paste in text</h2>
+<p class="note">Note: You may only upload a file OR add text, not both at once.</p>
+<div class="form_input_row">
+	<label for="fmt">Formatting:</label>
+	<select name="fmt" id="fmt">
+		<option value="_">None (Plain Text)</option>
+		% for lex_desc, lex_id in lexers:
+		    <option value="${lex_id}">${lex_desc}</option>
+		% endfor
+	</select>
+</div>
 <div class="code_area">
-	<textarea rows="25" cols="120" name="code"></textarea>
+	<textarea rows="20" cols="120" name="code"></textarea>
 </div>
 <div class="smt_button">
 	<input type="submit" value="Paste!" />

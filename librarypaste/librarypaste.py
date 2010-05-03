@@ -12,7 +12,6 @@ mapper.connect('paste', '', PasteBinPage())
 mapper.connect('viewpaste', ':pasteid', PasteViewPage())
 mapper.connect('plain', 'plain/:pasteid', PastePlainPage())
 mapper.connect('last', 'last/:nick', LastPage())
-mapper.connect('static_resource', 'static/:resource', PasteViewPage())
 
 # Cherrypy configuration here
 app_conf = {
