@@ -1,0 +1,17 @@
+<%inherit file="base.html"/>
+
+<div>${title} 
+
+<a href="${plainurl}">(Plain Text)</a>
+<a href="${homeurl}">(Create New Paste)</a>
+</div>
+
+<table class="codetable">
+<tr>
+<td class="numcell">
+<pre>${linenums}</pre>
+</td>
+<td class="codecell">
+${code}
+</td>
+</table>

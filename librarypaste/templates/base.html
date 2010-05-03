@@ -1,12 +1,11 @@
-#from Cheetah.Template import Template
-#extends Template
-
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"
     "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
 
 <html xmlns="http://www.w3.org/1999/xhtml">
 	<head>
-		<title>$title</title>
+		<title>${title}</title>
+		<link rel="shortcut icon" href="static/favicon.ico" type="image/x-icon">
+		<link rel="icon" href="static/favicon.ico" type="image/x-icon">
 		<style>
 			.form_input_row { margin: 5px; }
 			.form_input_row label { font-weight: bold; }
@@ -97,11 +96,10 @@ body .il { color: #0000D0; font-weight: bold } /* Literal.Number.Integer.Long */
 	</head>
 	<body>
 	<div class="header_section">
-		<img src="$url_for("static_resource", resource="ygpaste.png")" />
+		<img src="/static/ygpaste.png" />
 	</div>
 
-	#def body
-	#end def
+	${self.body()}
 
 
 	</body>

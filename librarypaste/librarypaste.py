@@ -6,6 +6,8 @@ import cherrypy
 from pastebin import PasteBinPage, PasteViewPage, LastPage, PastePlainPage
 
 mapper = cherrypy.dispatch.RoutesDispatcher()
+mapper.connect('paste', '', PasteBinPage(),
+                 action='post', conditions=dict(method=['POST']))
 mapper.connect('paste', '', PasteBinPage())
 mapper.connect('viewpaste', ':pasteid', PasteViewPage())
 mapper.connect('plain', 'plain/:pasteid', PastePlainPage())
