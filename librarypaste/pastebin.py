@@ -62,7 +62,10 @@ class PasteViewPage(object):
 		REPO = cherrypy.request.app.config['repo']['path']
 		d = {}
 		page = lookup.get_template('view.html')
-		paste_data = simplejson.loads(open(os.path.join(REPO, pasteid), 'rb').read())
+		try:
+			paste_data = simplejson.loads(open(os.path.join(REPO, pasteid), 'rb').read())
+		except IOError:
+			raise cherrypy.NotFound("The paste '%s' could not be found." % pasteid)
 		if paste_data['type'] == 'file':
 			raw = open(os.path.join(REPO, '%s.raw' % pasteid), 'rb').read()
 			cherrypy.response.headers['Content-Type'] = paste_data['mime']
