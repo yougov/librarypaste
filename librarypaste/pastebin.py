@@ -59,7 +59,7 @@ class PasteViewPage(object):
 			d['code'] = highlight(paste_data['code'], lexer, htmlformatter)
 		d['pasteid'] = pasteid
 		d['plainurl'] = cherrypy.url(routes.url_for(controller='plain', pasteid=pasteid))
-		d['homeurl'] = cherrypy.url(routes.url_for(controller='paste'), qs='')
+		d['homeurl'] = cherrypy.url(routes.url_for(controller='paste', pasteid=None))
 		d['title'] = 'Paste %s%s%s on %s' % (pasteid, 
 			' (%s)' % paste_data['fmt'] if paste_data['fmt'] != '_' else '',
 			' by %s' % paste_data['nick'] if paste_data['nick'] else '', 
