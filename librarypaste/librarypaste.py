@@ -19,7 +19,9 @@ app_conf = {
 	'/static' : {
 		'tools.staticdir.on' : True,
 		'tools.staticdir.dir' : os.path.abspath('static'),
-	}
+	},
+	'repo' : {'path' : os.path.join(os.getcwd(), 'repo')},
+	'lexers' : {'favorites' : ['python']},
 }
 
 

@@ -17,14 +17,14 @@ lookup = TemplateLookup(directories=['templates'])
 
 htmlformatter = get_formatter_by_name('html')
 
-REPO = os.path.join(os.getcwd(), 'repo')
 
 class PasteBinPage(object):
+
 	def index(self):
 		d = {}
 		page = lookup.get_template('entry.html')
 
-		d['title'] = "Pastebin"
+		d['title'] = "Library Paste"
 		
 		d['lexers'] = sorted([(l[0], l[1][0]) for l in get_all_lexers()])
 		d['pre_nick'] = ('' if not 'paste-nick' in cherrypy.request.cookie 
@@ -33,11 +33,10 @@ class PasteBinPage(object):
 
 	def post(self, fmt=None, nick=None, code=None, file=None):
 		uid = str(uuid.uuid4())
+		REPO = cherrypy.request.app.config['repo']['path']
+		data = file.file.read()
 		
-		if file.file:
-			print dir(file)
-			print dir(file.file)
-			data = file.file.read()
+		if data:
 			filename = file.filename
 			mime = file.type
 			content = {'nick' : nick, 'time' : time.time(), 'type' : 'file',
@@ -59,10 +58,8 @@ class PasteBinPage(object):
 		raise cherrypy.HTTPRedirect(cherrypy.url(routes.url_for('viewpaste', pasteid=uid)))
 
 class PasteViewPage(object):
-	template = Template(filename='templates/base.html')
-	body = Template(filename='templates/view.html')
-
 	def index(self, pasteid=None):
+		REPO = cherrypy.request.app.config['repo']['path']
 		d = {}
 		page = lookup.get_template('view.html')
 		paste_data = simplejson.loads(open(os.path.join(REPO, pasteid), 'rb').read())
@@ -72,6 +69,7 @@ class PasteViewPage(object):
 			cherrypy.response.headers['Content-Disposition'] = 'inline; filename="%s"' % paste_data['filename']
 			cherrypy.response.headers['filename'] = paste_data['filename']
 			return raw
+			
 		d['linenums'] = '\n'.join([str(x) for x in xrange(1, paste_data['code'].count('\n')+2)])
 		if paste_data['fmt'] == '_':
 			d['code'] = '<pre>%s</pre>' % cgi.escape(paste_data['code'])
@@ -89,6 +87,7 @@ class PasteViewPage(object):
 
 class LastPage(object):
 	def index(self, nick=''):
+		REPO = cherrypy.request.app.config['repo']['path']
 		last = ''
 		for line in open(os.path.join(REPO, 'log.txt')):
 			who, what = line.strip().rsplit(None, 1)
@@ -99,6 +98,7 @@ class LastPage(object):
 
 class PastePlainPage(object):
 	def index(self, pasteid=None):
+		REPO = cherrypy.request.app.config['repo']['path']
 		paste_data = simplejson.loads(open(os.path.join(REPO, pasteid), 'rb').read())
 		cherrypy.response.headers['Content-Type'] = 'text/plain'
 		return paste_data['code']
