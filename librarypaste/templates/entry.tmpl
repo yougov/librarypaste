@@ -1,0 +1,35 @@
+#from templates.base import base
+#extends base
+#def body
+$base.body(self)
+
+<form method="post">
+#if $lexers:
+<div class="form_input_row">
+	<label for="fmt">Formatting:</label>
+	<select name="fmt" id="fmt">
+		<option value="_">None (Plain Text)</option>
+#for $lex_desc, $lex_id in $lexers:
+		<option value="$lex_id">$lex_desc</option>
+#end for
+	</select>
+</div>
+#else
+<input type="hidden" name="fmt" value="_" />
+#end if
+
+<div class="form_input_row">
+	<label for="nick">Nickname:</label>
+	<input type="text" width="15" name="nick" value="$pre_nick" id="nick"/>
+</div>
+
+<p><strong>Code</strong></p>
+<div class="code_area">
+	<textarea rows="25" cols="120" name="code"></textarea>
+</div>
+<div class="smt_button">
+	<input type="submit" value="Paste!" />
+</div>
+$fabForm_paste
+</form>
+#end def
