@@ -29,8 +29,8 @@ def main():
     cherrypy.quickstart(None, '', config=app_conf)
 
 if __name__ == '__main__':
-	'''
-	Useful for development mode
-	'''
-	main()
-	
+    '''
+    Useful for development mode
+    '''
+    main()
+    
