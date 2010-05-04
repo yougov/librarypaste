@@ -25,6 +25,12 @@ def main():
         'lexers' : {'favorites' : ['python']},
     }
 
-
     cherrypy.tree.mount(root=None, config=app_conf)
     cherrypy.quickstart(None, '', config=app_conf)
+
+if __name__ == '__main__':
+	'''
+	Useful for development mode
+	'''
+	main()
+	

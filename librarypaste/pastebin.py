@@ -1,8 +1,12 @@
+# encoding: utf-8
 import cherrypy
 import time
-import simplejson
+try:
+	import simplejson as json
+except ImportError:
+	import json
 import uuid
-import cgi
+from cgi import escape
 import os
 import time, datetime
 from pygments.lexers import get_all_lexers, get_lexer_by_name
@@ -49,12 +53,13 @@ class PasteBinPage(object):
 			content = {'nick' : nick, 'time' : time.time(), 'type' : 'code',
 			'fmt' : fmt, 'code' : code}
 		fd = open(os.path.join(REPO, uid), 'wb')
-		fd.write(simplejson.dumps(content))
+		fd.write(json.dumps(content))
 		fd.close()
 
 		if nick:
 			open(os.path.join(REPO, 'log.txt'), 'a').write('%s %s\n' % (nick, uid))
 			cherrypy.response.cookie['paste-nick'] = nick
+			cherrypy.response.cookie['paste-nick']['expires'] = 60 * 60 * 24 * 30 #store cookies for 30 days
 		
 		raise cherrypy.HTTPRedirect(cherrypy.url(routes.url_for('viewpaste', pasteid=uid)))
 
@@ -64,7 +69,7 @@ class PasteViewPage(object):
 		d = {}
 		page = lookup.get_template('view.html')
 		try:
-			paste_data = simplejson.loads(open(os.path.join(REPO, pasteid), 'rb').read())
+			paste_data = json.loads(open(os.path.join(REPO, pasteid), 'rb').read())
 		except IOError:
 			raise cherrypy.NotFound("The paste '%s' could not be found." % pasteid)
 		if paste_data['type'] == 'file':
@@ -76,7 +81,7 @@ class PasteViewPage(object):
 			
 		d['linenums'] = '\n'.join([str(x) for x in xrange(1, paste_data['code'].count('\n')+2)])
 		if paste_data['fmt'] == '_':
-			d['code'] = '<pre>%s</pre>' % cgi.escape(paste_data['code'])
+			d['code'] = '<pre>%s</pre>' % escape(paste_data['code'])
 		else:
 			lexer = get_lexer_by_name(paste_data['fmt'])
 			d['code'] = highlight(paste_data['code'], lexer, htmlformatter)
@@ -103,6 +108,6 @@ class LastPage(object):
 class PastePlainPage(object):
 	def index(self, pasteid=None):
 		REPO = cherrypy.request.app.config['repo']['path']
-		paste_data = simplejson.loads(open(os.path.join(REPO, pasteid), 'rb').read())
+		paste_data = json.loads(open(os.path.join(REPO, pasteid), 'rb').read())
 		cherrypy.response.headers['Content-Type'] = 'text/plain'
 		return paste_data['code']
