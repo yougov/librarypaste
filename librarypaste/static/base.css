@@ -1,0 +1,36 @@
+body {
+    font-family: sans-serif;
+}
+
+.header {
+    float: left;
+    margin: 10px;
+}
+
+.form_input_row { margin: 10px; }
+.form_input_row label { font-weight: bold; }
+p { margin: 10px; line-height: 125%; }
+.code_area { margin: 15px; }
+p.note {
+    font-size: smaller;
+    font-style: italic;
+}
+pre { font-size: 14px; }
+td.numcell { 
+    width: 60px;
+    text-align: right; 
+    padding: 0 7px; 
+    background: #ccc;
+}
+td.codecell {
+    padding: 0 5px;
+}
+
+table.codetable {
+    border-top: black 1px solid;
+    border-bottom: black 1px solid;
+    margin: 10px;
+}
+h2 {
+    margin-bottom: 5px;
+}
