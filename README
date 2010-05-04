@@ -1,3 +1,3 @@
 A Python paste bin.
 
-Serve it up from librarypaste.py. Right now it saves to cwd/repo, but hopefully that will change/be improved soon.
+Serve it up from librarypaste.py or install it and run the librarypaste command. Right now it saves to `cwd`/repo, but hopefully that will change/be improved soon.
