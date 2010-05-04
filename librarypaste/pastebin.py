@@ -12,8 +12,9 @@ from mako.template import Template
 from mako.lookup import TemplateLookup
 import routes
 
+BASE = os.path.abspath(os.path.dirname(__file__))
 
-lookup = TemplateLookup(directories=['templates'])
+lookup = TemplateLookup(directories=[os.path.join(BASE, 'templates')])
 
 htmlformatter = get_formatter_by_name('html')
 
