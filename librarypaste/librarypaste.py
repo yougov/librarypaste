@@ -3,17 +3,18 @@
 
 import os
 import cherrypy
-from pastebin import BASE, PasteBinPage, PasteViewPage, LastPage, PastePlainPage
+from pastebin import BASE, PasteBinPage, PasteViewPage, LastPage, PastePlainPage, AboutPage
 
 def main():
     mapper = cherrypy.dispatch.RoutesDispatcher()
     mapper.connect('paste', '', PasteBinPage(),
                      action='post', conditions=dict(method=['POST']))
     mapper.connect('paste', '', PasteBinPage())
+    mapper.connect('about', 'about', AboutPage())
     mapper.connect('viewpaste', ':pasteid', PasteViewPage())
     mapper.connect('plain', 'plain/:pasteid', PastePlainPage())
     mapper.connect('last', 'last/:nick', LastPage())
-
+    
     # Cherrypy configuration here
     app_conf = {
         '/' : {'request.dispatch' : mapper},
@@ -24,7 +25,7 @@ def main():
         'repo' : {'path' : os.path.join(os.getcwd(), 'repo')},
         'lexers' : {'favorites' : ['python']},
     }
-
+    
     cherrypy.tree.mount(root=None, config=app_conf)
     cherrypy.quickstart(None, '', config=app_conf)
 

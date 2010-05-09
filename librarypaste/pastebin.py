@@ -10,7 +10,7 @@ from cgi import escape
 import os
 import time, datetime
 from pygments.lexers import get_all_lexers, get_lexer_by_name
-from pygments.formatters import get_formatter_by_name
+from pygments.formatters import HtmlFormatter
 from pygments import highlight
 from mako.template import Template
 from mako.lookup import TemplateLookup
@@ -19,8 +19,6 @@ import routes
 BASE = os.path.abspath(os.path.dirname(__file__))
 
 lookup = TemplateLookup(directories=[os.path.join(BASE, 'templates')])
-
-htmlformatter = get_formatter_by_name('html')
 
 
 class PasteBinPage(object):
@@ -81,10 +79,11 @@ class PasteViewPage(object):
             
         d['linenums'] = '\n'.join([str(x) for x in xrange(1, paste_data['code'].count('\n')+2)])
         if paste_data['fmt'] == '_':
-            d['code'] = '<pre>%s</pre>' % escape(paste_data['code'])
+            lexer = get_lexer_by_name('text')
         else:
             lexer = get_lexer_by_name(paste_data['fmt'])
-            d['code'] = highlight(paste_data['code'], lexer, htmlformatter)
+        htmlformatter = HtmlFormatter(linenos='table')
+        d['code'] = highlight(paste_data['code'], lexer, htmlformatter)
         d['pasteid'] = pasteid
         d['plainurl'] = cherrypy.url(routes.url_for(controller='plain', pasteid=pasteid))
         d['homeurl'] = cherrypy.url(routes.url_for(controller='paste', pasteid=None))
@@ -111,3 +110,11 @@ class PastePlainPage(object):
         paste_data = json.loads(open(os.path.join(REPO, pasteid), 'rb').read())
         cherrypy.response.headers['Content-Type'] = 'text/plain'
         return paste_data['code']
+
+class AboutPage(object):
+    def index(self):
+        d = {}
+        page = lookup.get_template('about.html')
+        d['title'] = 'About Library Paste'
+        d['bleh'] = 'Yeah, what about it?'
+        return page.render(**d)
