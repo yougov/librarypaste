@@ -62,9 +62,10 @@ class PasteBinPage(object):
         raise cherrypy.HTTPRedirect(cherrypy.url(routes.url_for('viewpaste', pasteid=uid)))
 
 class PasteViewPage(object):
-    def index(self, pasteid=None):
+    def index(self, pasteid=None, wrap=False):
         REPO = cherrypy.request.app.config['repo']['path']
         d = {}
+        d['wrap'] = bool(wrap)
         page = lookup.get_template('view.html')
         try:
             paste_data = json.loads(open(os.path.join(REPO, pasteid), 'rb').read())
@@ -101,8 +102,9 @@ class LastPage(object):
             who, what = line.strip().rsplit(None, 1)
             if who == nick:
                 last = what
-        cherrypy.response.headers['Content-Type'] = 'text/plain'
-        return last
+                raise cherrypy.HTTPRedirect(cherrypy.url(routes.url_for('viewpaste', pasteid=last)))
+        else:
+            raise cherrypy.NotFound(nick)
 
 class PastePlainPage(object):
     def index(self, pasteid=None):
@@ -111,10 +113,17 @@ class PastePlainPage(object):
         cherrypy.response.headers['Content-Type'] = 'text/plain'
         return paste_data['code']
 
+        
 class AboutPage(object):
     def index(self):
         d = {}
         page = lookup.get_template('about.html')
         d['title'] = 'About Library Paste'
-        d['bleh'] = 'Yeah, what about it?'
+        d['about'] = '''
+        <p>Library Paste is an open source library paste engine - you're using an example of it right now! It was originally created by Jamie Turner, and modified and open sourced by Chris Mulligan. Right now the closest thing to a home page is its BitBucket account: <a href="http://bitbucket.org/chmullig/librarypaste">http://bitbucket.org/chmullig/librarypaste</a></p>
+        <p>Using Library Paste is really simple - it can do just a couple things. You can upload text/code/files, and you can view them. Each paste is identified by a UUID; or optionally by a 5 character short code. Just copy the URL you have and share it with whomever you want. You can view pastes simply by appending the paste ID (either one) to the main URL.</p>
+        <p>Library Paste can also take files and share them. It will attempt to serve back the files with whatever MIME type they were uploaded with - so if you attach a picture it will come through as a picture. Although it has a long URL, if you try to download the file or save it the original URL will come through. Right now there are no explicit limits on file size, however the web server and/or client may enforce some.</p>
+        <p>One "hidden" feature is that you can find the last paste by a given nickname. You simple to go the url last/$username and you'll get redirected to their most recent paste, or given a 404 if it's not found. This is useful for IRC bots, for example.</p>
+        <p>If you'd like your own, Library Paste is easy to setup. It's written in python using cherrypy, you can download the code at the bitbucket account listed above. If you have any feedback, questions or comments please send them along, via bitbucket, <a href="http://twitter.com/chmullig" alt="@chmullig on twitter">@chmullig</a> or chmullig@gmail.com.</p>
+        '''
         return page.render(**d)

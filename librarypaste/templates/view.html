@@ -1,10 +1,18 @@
 <%inherit file="base.html"/>
 
-<div>${title}
-
-<a href="${plainurl}">(Plain Text)</a>
-<a href="${homeurl}">(Create New Paste)</a>
-</div>
+<p>${title}
+<br/ > <a href="${plainurl}">(Plain Text)</a>
+% if wrap:
+    <a href="/${pasteid}">(Unwrap Lines)</a>
+% else:
+    <a href="/${pasteid}?wrap=1">(Wrap Lines)</a>
+% endif
+</p>
 <div style="clear: both;"></div>
+% if wrap:
+    <div class="wrap">
+% endif
 ${code}
-
+% if wrap:
+    </div>
+% endif

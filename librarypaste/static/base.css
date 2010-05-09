@@ -34,6 +34,11 @@ td.linenos {
     padding: 0 7px; 
     background: #ccc;
 }
-td.code pre {
+
+/*Hide the line numbers and wrap text*/
+div.wrap td.code pre {
     white-space: pre-wrap;
+}
+div.wrap td.linenos {
+    display: none;
 }
