@@ -5,13 +5,12 @@ body {
     margin: 10px;
     margin-bottom: 20px;
     font-size: larger;
-    padding: 8 px;
+    padding: 8px;
 }
 .logo {
     float: left;
     margin: 5px;
     margin-right: 15px;
-    margin-bottom: 5px;
     border: none;
 }
 
@@ -25,6 +24,10 @@ p.note {
     font-style: italic;
 }
 
+table.highlighttable {
+    border-top: solid black 1px;
+    border-bottom: solid black 1px;
+}
 pre {
     font-size: 14px;
     line-height: 125%;
@@ -35,10 +38,6 @@ td.linenos {
     background: #ccc;
 }
 
-/*Hide the line numbers and wrap text*/
-div.wrap td.code pre {
+.wrap {
     white-space: pre-wrap;
-}
-div.wrap td.linenos {
-    display: none;
 }

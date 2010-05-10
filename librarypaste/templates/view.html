@@ -2,16 +2,21 @@
 
 <p>${title}
 <br/ > <a href="${plainurl}">(Plain Text)</a>
-% if wrap:
-    <a href="/${pasteid}">(Unwrap Lines)</a>
-% else:
-    <a href="/${pasteid}?wrap=1">(Wrap Lines)</a>
-% endif
+<a href="#wrap" id="wrapbtn">(Wrap Lines)</a>
+<script>
+    $('a#wrapbtn').toggle(function() {
+        $("td.linenos").toggle();
+        $("td.code pre").toggleClass("wrap");
+        $("a#wrapbtn").text("(Unwrap Lines)");
+    }, function() {
+        $("td.linenos").toggle();
+        $("td.code pre").toggleClass("wrap");
+        $("a#wrapbtn").text("(Wrap Lines)");
+    });
+</script>
+
 </p>
 <div style="clear: both;"></div>
-% if wrap:
-    <div class="wrap">
-% endif
 ${code}
 % if wrap:
     </div>
