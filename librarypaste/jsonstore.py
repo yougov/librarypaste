@@ -10,6 +10,7 @@ try:
     import simplejson as json
 except ImportError:
     import json
+from datastore import DataStore
 
 class JsonDataStore(DataStore):
     """Stores using json encoded into files"""

@@ -4,7 +4,7 @@
 import os
 import cherrypy
 from pastebin import BASE, PasteBinPage, PasteViewPage, LastPage, PastePlainPage, AboutPage
-from datastore import JsonDataStore
+from jsonstore import JsonDataStore
 
 def main():
     mapper = cherrypy.dispatch.RoutesDispatcher()
