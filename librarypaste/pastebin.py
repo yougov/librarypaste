@@ -3,7 +3,7 @@ import cherrypy
 import time
 from cgi import escape
 import os
-import time, datetime
+import datetime
 from pygments.lexers import get_all_lexers, get_lexer_by_name
 from pygments.formatters import HtmlFormatter
 from pygments import highlight
@@ -36,7 +36,7 @@ class PasteBinPage(object):
     def post(self, fmt=None, nick=None, code=None, file=None, makeshort=None):
         ds = cherrypy.request.app.config['datastore']['datastore']
         data = file.file.read()
-        content = {'nick' : nick, 'time' : time.time(), 'makeshort' : bool(makeshort)}
+        content = {'nick' : nick, 'time' : datetime.datetime.now(), 'makeshort' : bool(makeshort)}
         if data:
             filename = file.filename
             mime = file.type
@@ -87,7 +87,7 @@ class PasteViewPage(object):
         d['title'] = 'Paste %s%s%s on %s' % (pasteid, 
             ' (%s)' % paste_data['fmt'] if paste_data['fmt'] != '_' else '',
             ' by %s' % paste_data['nick'] if paste_data['nick'] else '', 
-        datetime.datetime.fromtimestamp(paste_data['time']).strftime('%b %d, %H:%M'))
+        paste_data['time'].strftime('%b %d, %H:%M'))
         return page.render(**d)
 
 class LastPage(object):

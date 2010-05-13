@@ -18,6 +18,7 @@ except ImportError:
 import uuid
 from string import letters, digits
 from random import choice
+import time, datetime
 
 def shortkey():
     firstlast = list(letters + digits) 
@@ -89,7 +90,11 @@ class JsonDataStore(DataStore):
         self.shortids = {}
     
     def _store(self, uid, content):
-        data = content.pop('data')
+        content['time'] = time.mktime(content['time'].timetuple())
+        try:
+            data = content.pop('data')
+        except KeyError:
+            data = None
         fd = open(os.path.join(self.repo, uid), 'wb')
         fd.write(json.dumps(content))
         fd.close()
@@ -97,9 +102,11 @@ class JsonDataStore(DataStore):
             fd = open(os.path.join(self.repo, '%s.raw' % uid), 'wb')
             fd.write(data)
             fd.close()
-        if content['shortid']:
+        try:
             self.shortids[content['shortid']] = uid
             open(os.path.join(self.repo, 'shortids.txt'), 'a').write('%s %s\n' % (content['shortid'], uid))
+        except KeyError:
+            pass
         
     def _storeLog(self, nick, time, uid):
         open(os.path.join(self.repo, 'log.txt'), 'a').write('%s %s\n' % (nick, uid))
@@ -127,4 +134,5 @@ class JsonDataStore(DataStore):
         paste = json.loads(open(os.path.join(self.repo, uid), 'rb').read())
         if paste['type'] == 'file':
             paste['data'] = open(os.path.join(self.repo, '%s.raw' % uid), 'rb').read()
+        paste['time'] = datetime.datetime.fromtimestamp(paste['time'])
         return paste
