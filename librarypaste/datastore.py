@@ -31,7 +31,7 @@ class DataStore(object):
     def __init__(self, *args, **kwargs):
         pass
         
-    def _store(self, uid, content):
+    def _store(self, uid, content, data):
         """Store the given dict of content at uid. Nothing returned."""
         raise NotImplementedError
         
@@ -59,12 +59,12 @@ class DataStore(object):
             
         temp = {'uid' : uid, 'shortid' : shortid, 'type' : type, 'nick' : nick, 'time' : time,
             'fmt' : fmt, 'code' : code,
-            'filename' : filename, 'mime' : mime, 'data' : data}
+            'filename' : filename, 'mime' : mime}
         paste = {}
         for k, v in temp.items():
             if v:
                 paste[k] = v
-        self._store(uid, paste)
+        self._store(uid, paste, data)
         if nick:
             self._storeLog(nick, time, uid)
         return (uid, shortid)
@@ -89,12 +89,8 @@ class JsonDataStore(DataStore):
             os.mkdirs(repo)
         self.shortids = {}
     
-    def _store(self, uid, content):
+    def _store(self, uid, content, data=None):
         content['time'] = time.mktime(content['time'].timetuple())
-        try:
-            data = content.pop('data')
-        except KeyError:
-            data = None
         fd = open(os.path.join(self.repo, uid), 'wb')
         fd.write(json.dumps(content))
         fd.close()
