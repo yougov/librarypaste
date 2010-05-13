@@ -13,10 +13,7 @@ try:
 except ImportError:
     import json
 
-try:
-    from google.appengine.ext import db
-except ImportError:
-    pass
+
 
 import uuid
 from string import letters, digits
@@ -33,12 +30,8 @@ class DataStore(object):
     def __init__(self, *args, **kwargs):
         pass
         
-    def _storeCode(self, uid, content):
+    def _store(self, uid, content):
         """Store the given dict of content at uid. Nothing returned."""
-        raise NotImplementedError
-        
-    def _storeFile(self, uid, content, data):
-        """Store the given data & content dictionary. Nothing returned."""
         raise NotImplementedError
         
     def _storeLog(self, nick, time, uid):
@@ -65,10 +58,8 @@ class DataStore(object):
             
         paste = {'uid' : uid, 'shortid' : shortid, 'type' : type, 'nick' : nick, 'time' : time,
             'fmt' : fmt, 'code' : code,
-            'filename' : filename, 'mime' : mime}
-        self._storeCode(uid, paste)
-        if type == 'file':
-            self._storeFile(uid, data) 
+            'filename' : filename, 'mime' : mime, 'data' : data}
+        self._store(uid, paste)
         if nick:
             self._storeLog(nick, time, uid)
         return (uid, shortid)
@@ -93,19 +84,19 @@ class JsonDataStore(DataStore):
             os.mkdirs(repo)
         self.shortids = {}
     
-    def _storeCode(self, uid, content):
+    def _store(self, uid, content):
+        data = content.pop('data')
         fd = open(os.path.join(self.repo, uid), 'wb')
         fd.write(json.dumps(content))
         fd.close()
+        if data:
+            fd = open(os.path.join(self.repo, '%s.raw' % uid), 'wb')
+            fd.write(data)
+            fd.close()
         if content['shortid']:
             self.shortids[content['shortid']] = uid
             open(os.path.join(self.repo, 'shortids.txt'), 'a').write('%s %s\n' % (content['shortid'], uid))
         
-    def _storeFile(self, uid, data):
-        fd = open(os.path.join(self.repo, '%s.raw' % uid), 'wb')
-        fd.write(data)
-        fd.close()
-    
     def _storeLog(self, nick, time, uid):
         open(os.path.join(self.repo, 'log.txt'), 'a').write('%s %s\n' % (nick, uid))
     
