@@ -11,16 +11,14 @@ import os
 try:
     import simplejson as json
 except ImportError:
-    try:
-        import json
-    except ImportError:
-        pass
+    import json
 
 try:
     from google.appengine.ext import db
 except ImportError:
     pass
 
+import uuid
 from string import letters, digits
 from random import choice
 
@@ -52,35 +50,27 @@ class DataStore(object):
         data, if any, as the key 'data'. Must pass in uid, not shortid."""
         raise NotImplementedError
         
-    def lookupLog(self, nick):
+    def lookup(self, nick):
         """Looks for the most recent paste by a given nick.
         Returns the uid or None"""
         raise NotImplementedError
         
-    def storeCode(self, nick, time, fmt, code, makeshort=True):
-        """Store a piece of code. Returns a tuple containing the uid and shortid"""
+    def store(self, type, nick, time, fmt=None, code=None, filename=None, mime=None, data=None, makeshort=True):
+        """Store code or a file. Returns a tuple containing the uid and shortid"""
         uid = str(uuid.uuid4())
         if makeshort:
             shortid = shortkey()
         else:
             shortid = None
-        paste = {'uid' : uid, 'shortid' : shortid, 'type' : 'code', 'nick' : nick,
-            'time' : time, 'fmt' = fmt, 'code' : code}
+            
+        paste = {'uid' : uid, 'shortid' : shortid, 'type' : type, 'nick' : nick, 'time' : time,
+            'fmt' : fmt, 'code' : code,
+            'filename' : filename, 'mime' : mime}
         self._storeCode(uid, paste)
+        if type == 'file':
+            self._storeFile(uid, data) 
         if nick:
             self._storeLog(nick, time, uid)
-        return (uid, shortid)
-    
-    def storeFile(self, nick, time, filename, mime, data, makeshort=True):
-        """Store a file, returns a tuple containing the uid and shortid."""
-        uid = str(uuid.uuid4())
-        if makeshort:
-            shortid = shortkey()
-        else:
-            shortid = None
-        paste = {'uid' : uid, 'shortid' : shortid, 'type' = 'file', 'nick' : nick,
-            'time' : time, 'filename' : filename, 'mime' : mime}
-        self._storeFile(uid, paste, data)
         return (uid, shortid)
     
     def retrieve(self, id):
@@ -88,7 +78,7 @@ class DataStore(object):
         and the file data, if it's a file."""
         if len(id) < 10:
             shortid = id
-            uid = self._lookupLog(shortid)
+            uid = self._lookupUid(shortid)
         else:
             uid = id
         return self._retrieve(uid)
@@ -111,30 +101,35 @@ class JsonDataStore(DataStore):
             self.shortids[content['shortid']] = uid
             open(os.path.join(self.repo, 'shortids.txt'), 'a').write('%s %s\n' % (content['shortid'], uid))
         
-    def _storeFile(self, uid, content, data):
-        raw = open(os.path.join(self.repo, '%s.raw' % uid), 'wb')
-        raw.write(data)
-        raw.close()
-        fd = open(os.path.join(self.repo, uid), 'wb')
-        fd.write(json.dumps(content))
+    def _storeFile(self, uid, data):
+        fd = open(os.path.join(self.repo, '%s.raw' % uid), 'wb')
+        fd.write(data)
         fd.close()
-        if content['shortid']:
-            self.shortids[content['shortid']] = uid
-            open(os.path.join(self.repo, 'shortids.txt'), 'a').write('%s %s\n' % (content['shortid'], uid))
     
     def _storeLog(self, nick, time, uid):
         open(os.path.join(self.repo, 'log.txt'), 'a').write('%s %s\n' % (nick, uid))
     
-    def lookupLog(self, nick):
+    def lookup(self, nick):
         last = None
         for line in open(os.path.join(self.repo, 'log.txt')):
             who, uid = line.strip().rsplit(None, 1)
             if who == nick:
                 last = uid
         return last
+        
+    def _lookupUid(self, shortid):
+        if not self.shortids:
+            for line in open(os.path.join(self.repo, 'shortids.txt')):
+                l1, l2 = line.strip().rsplit(None, 1)
+                self.shortids[l1] = l2
+        try:
+            uid = self.shortids[shortid]
+        except KeyError:
+            uid = None
+        return uid
 
     def _retrieve(self, uid):
         paste = json.loads(open(os.path.join(self.repo, uid), 'rb').read())
-        if paste_data['type'] == 'file':
+        if paste['type'] == 'file':
             paste['data'] = open(os.path.join(self.repo, '%s.raw' % uid), 'rb').read()
         return paste

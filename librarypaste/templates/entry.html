@@ -33,6 +33,11 @@
     <textarea rows="20" cols="120" name="code"></textarea>
 </div>
 <div class="smt_button">
-    <input type="submit" value="Paste!" />
+    <label for="makeshort">Use a short URL:</label><input type="checkbox" name="makeshort" value="True" 
+    % if short:
+        checked="checked"
+    % endif
+    />
+    <br /><input type="submit" value="Paste!" />
 </div>
 </form>

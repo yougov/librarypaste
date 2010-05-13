@@ -4,6 +4,7 @@
 import os
 import cherrypy
 from pastebin import BASE, PasteBinPage, PasteViewPage, LastPage, PastePlainPage, AboutPage
+from datastore import JsonDataStore
 
 def main():
     mapper = cherrypy.dispatch.RoutesDispatcher()
@@ -15,6 +16,8 @@ def main():
     mapper.connect('plain', 'plain/:pasteid', PastePlainPage())
     mapper.connect('last', 'last/:nick', LastPage())
     
+    repo = os.path.join(os.getcwd(), 'repo')
+    ds = JsonDataStore(repo)
     # Cherrypy configuration here
     app_conf = {
         '/' : {'request.dispatch' : mapper},
@@ -22,7 +25,8 @@ def main():
             'tools.staticdir.on' : True,
             'tools.staticdir.dir' : os.path.join(BASE, 'static'),
         },
-        'repo' : {'path' : os.path.join(os.getcwd(), 'repo')},
+        'repo' : {'path' : repo},
+        'datastore' : {'datastore' : ds, 'type' : 'json'},
         'lexers' : {'favorites' : ['python']},
     }
     

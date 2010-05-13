@@ -1,11 +1,6 @@
 # encoding: utf-8
 import cherrypy
 import time
-try:
-    import simplejson as json
-except ImportError:
-    import json
-import uuid
 from cgi import escape
 import os
 import time, datetime
@@ -26,57 +21,61 @@ class PasteBinPage(object):
     def index(self):
         d = {}
         page = lookup.get_template('entry.html')
+        print cherrypy.request.cookie
 
         d['title'] = "Library Paste"
         
         d['lexers'] = sorted([(l[0], l[1][0]) for l in get_all_lexers()])
         d['pre_nick'] = ('' if not 'paste-nick' in cherrypy.request.cookie 
-        else cherrypy.request.cookie['paste-nick'].value)
+            else cherrypy.request.cookie['paste-nick'].value)
+        try:
+            print type(cherrypy.request.cookie['paste-short'].value)
+            d['short'] = bool(int(cherrypy.request.cookie['paste-short'].value))
+            print d['short']
+        except KeyError:
+            d['short'] = True
         return page.render(**d)
 
-    def post(self, fmt=None, nick=None, code=None, file=None):
-        uid = str(uuid.uuid4())
-        REPO = cherrypy.request.app.config['repo']['path']
+    def post(self, fmt=None, nick=None, code=None, file=None, makeshort=None):
+        ds = cherrypy.request.app.config['datastore']['datastore']
         data = file.file.read()
-        
+        content = {'nick' : nick, 'time' : time.time(), 'makeshort' : bool(makeshort)}
         if data:
             filename = file.filename
             mime = file.type
-            content = {'nick' : nick, 'time' : time.time(), 'type' : 'file',
-                'mime' : mime, 'filename' : filename,}
-            raw = open(os.path.join(REPO, '%s.raw' % uid), 'wb')
-            raw.write(data)
-            raw.close()
+            content.update({'type' : 'file', 'mime' : mime, 'filename' : filename, 'data' : data})
         else:
-            content = {'nick' : nick, 'time' : time.time(), 'type' : 'code',
-            'fmt' : fmt, 'code' : code}
-        fd = open(os.path.join(REPO, uid), 'wb')
-        fd.write(json.dumps(content))
-        fd.close()
+            content.update({'type' : 'code', 'fmt' : fmt, 'code' : code})
+        (uid, shortid) = ds.store(**content)
 
         if nick:
-            open(os.path.join(REPO, 'log.txt'), 'a').write('%s %s\n' % (nick, uid))
             cherrypy.response.cookie['paste-nick'] = nick
             cherrypy.response.cookie['paste-nick']['expires'] = 60 * 60 * 24 * 30 #store cookies for 30 days
         
-        raise cherrypy.HTTPRedirect(cherrypy.url(routes.url_for('viewpaste', pasteid=uid)))
+        if makeshort:
+            redirid = shortid
+            cherrypy.response.cookie['paste-short'] = 1
+            cherrypy.response.cookie['paste-short']['expires'] = 60 * 60 * 24 * 30 #store cookies for 30 days
+        else:
+            redirid = uid
+            cherrypy.response.cookie['paste-short'] = 0
+            cherrypy.response.cookie['paste-short']['expires'] = 60 * 60 * 24 * 30 #store cookies for 30 days
+        raise cherrypy.HTTPRedirect(cherrypy.url(routes.url_for('viewpaste', pasteid=redirid)))
 
 class PasteViewPage(object):
-    def index(self, pasteid=None, wrap=False):
-        REPO = cherrypy.request.app.config['repo']['path']
+    def index(self, pasteid=None):
+        ds = cherrypy.request.app.config['datastore']['datastore']
         d = {}
-        d['wrap'] = bool(wrap)
         page = lookup.get_template('view.html')
         try:
-            paste_data = json.loads(open(os.path.join(REPO, pasteid), 'rb').read())
-        except IOError:
+            paste_data = ds.retrieve(pasteid)
+        except:
             raise cherrypy.NotFound("The paste '%s' could not be found." % pasteid)
         if paste_data['type'] == 'file':
-            raw = open(os.path.join(REPO, '%s.raw' % pasteid), 'rb').read()
             cherrypy.response.headers['Content-Type'] = paste_data['mime']
             cherrypy.response.headers['Content-Disposition'] = 'inline; filename="%s"' % paste_data['filename']
             cherrypy.response.headers['filename'] = paste_data['filename']
-            return raw
+            return paste_data['data']
             
         d['linenums'] = '\n'.join([str(x) for x in xrange(1, paste_data['code'].count('\n')+2)])
         if paste_data['fmt'] == '_':
@@ -96,20 +95,17 @@ class PasteViewPage(object):
 
 class LastPage(object):
     def index(self, nick=''):
-        REPO = cherrypy.request.app.config['repo']['path']
-        last = ''
-        for line in open(os.path.join(REPO, 'log.txt')):
-            who, what = line.strip().rsplit(None, 1)
-            if who == nick:
-                last = what
-                raise cherrypy.HTTPRedirect(cherrypy.url(routes.url_for('viewpaste', pasteid=last)))
+        ds = cherrypy.request.app.config['datastore']['datastore']
+        last = ds.lookup(nick)
+        if last:
+            raise cherrypy.HTTPRedirect(cherrypy.url(routes.url_for('viewpaste', pasteid=last)))
         else:
             raise cherrypy.NotFound(nick)
 
 class PastePlainPage(object):
     def index(self, pasteid=None):
-        REPO = cherrypy.request.app.config['repo']['path']
-        paste_data = json.loads(open(os.path.join(REPO, pasteid), 'rb').read())
+        ds = cherrypy.request.app.config['datastore']['datastore']
+        paste_data = ds.retrieve(pasteid)
         cherrypy.response.headers['Content-Type'] = 'text/plain'
         return paste_data['code']
 
