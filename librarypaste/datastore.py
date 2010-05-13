@@ -56,9 +56,13 @@ class DataStore(object):
         else:
             shortid = None
             
-        paste = {'uid' : uid, 'shortid' : shortid, 'type' : type, 'nick' : nick, 'time' : time,
+        temp = {'uid' : uid, 'shortid' : shortid, 'type' : type, 'nick' : nick, 'time' : time,
             'fmt' : fmt, 'code' : code,
             'filename' : filename, 'mime' : mime, 'data' : data}
+        paste = {}
+        for k, v in temp.items():
+            if v:
+                paste[k] = v
         self._store(uid, paste)
         if nick:
             self._storeLog(nick, time, uid)
