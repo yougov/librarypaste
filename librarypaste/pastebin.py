@@ -21,7 +21,6 @@ class PasteBinPage(object):
     def index(self):
         d = {}
         page = lookup.get_template('entry.html')
-        print cherrypy.request.cookie
 
         d['title'] = "Library Paste"
         
@@ -29,9 +28,7 @@ class PasteBinPage(object):
         d['pre_nick'] = ('' if not 'paste-nick' in cherrypy.request.cookie 
             else cherrypy.request.cookie['paste-nick'].value)
         try:
-            print type(cherrypy.request.cookie['paste-short'].value)
             d['short'] = bool(int(cherrypy.request.cookie['paste-short'].value))
-            print d['short']
         except KeyError:
             d['short'] = True
         return page.render(**d)
