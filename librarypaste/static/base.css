@@ -6,6 +6,7 @@ body {
     margin-bottom: 20px;
     font-size: larger;
     padding: 8px;
+    vertical-align: top;
 }
 .logo {
     float: left;

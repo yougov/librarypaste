@@ -10,10 +10,23 @@ from pygments import highlight
 from mako.template import Template
 from mako.lookup import TemplateLookup
 import routes
+import imghdr
 
 BASE = os.path.abspath(os.path.dirname(__file__))
 
 lookup = TemplateLookup(directories=[os.path.join(BASE, 'templates')])
+
+class LexerSorter(object):
+    """Takes a list of preferred lexers, and sorts them at the top of the list."""
+    def __init__(self, favored_languages):
+        self.favored_langs = [x.lower().strip() for x in favored_languages]
+        
+    def sort_key_lex(self, l):
+        key = l[0].lower()
+        for f in self.favored_langs:
+            if f in key:
+                return 'aaaaaaaaaaaaaaaaaa' + key
+        return key
 
 
 class PasteBinPage(object):
@@ -24,7 +37,9 @@ class PasteBinPage(object):
 
         d['title'] = "Library Paste"
         
-        d['lexers'] = sorted([(l[0], l[1][0]) for l in get_all_lexers()])
+        s = LexerSorter(cherrypy.request.app.config['lexers']['favorites'])
+        
+        d['lexers'] = sorted([(l[0], l[1][0]) for l in get_all_lexers()], key=s.sort_key_lex)
         d['pre_nick'] = ('' if not 'paste-nick' in cherrypy.request.cookie 
             else cherrypy.request.cookie['paste-nick'].value)
         try:
@@ -41,6 +56,7 @@ class PasteBinPage(object):
             filename = file.filename
             mime = file.type
             content.update({'type' : 'file', 'mime' : mime, 'filename' : filename, 'data' : data})
+            imagetype = imghdr.what(filename, data)
         else:
             content.update({'type' : 'code', 'fmt' : fmt, 'code' : code})
         (uid, shortid) = ds.store(**content)
@@ -57,7 +73,11 @@ class PasteBinPage(object):
             redirid = uid
             cherrypy.response.cookie['paste-short'] = 0
             cherrypy.response.cookie['paste-short']['expires'] = 60 * 60 * 24 * 30 #store cookies for 30 days
-        raise cherrypy.HTTPRedirect(cherrypy.url(routes.url_for('viewpaste', pasteid=redirid)))
+            
+        if content['type'] == 'file' and not imagetype:
+            raise cherrypy.HTTPRedirect(cherrypy.url(routes.url_for('file', pasteid=redirid)))
+        else:
+            raise cherrypy.HTTPRedirect(cherrypy.url(routes.url_for('viewpaste', pasteid=redirid)))
 
 class PasteViewPage(object):
     def index(self, pasteid=None):
@@ -106,6 +126,14 @@ class PastePlainPage(object):
         cherrypy.response.headers['Content-Type'] = 'text/plain'
         return paste_data['code']
 
+class FilePage(object):
+    def index(self, pasteid=''):
+        ds = cherrypy.request.app.config['datastore']['datastore']
+        d = {}
+        page = lookup.get_template('file.html')
+        d['title'] = "File link for %s" % pasteid
+        d['link'] = cherrypy.url(routes.url_for(controller='viewpaste', pasteid=pasteid))
+        return page.render(**d)
         
 class AboutPage(object):
     def index(self):

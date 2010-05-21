@@ -3,7 +3,7 @@
 
 import os
 import cherrypy
-from pastebin import BASE, PasteBinPage, PasteViewPage, LastPage, PastePlainPage, AboutPage
+from pastebin import BASE, PasteBinPage, PasteViewPage, LastPage, PastePlainPage, FilePage, AboutPage
 from jsonstore import JsonDataStore
 
 def main():
@@ -12,9 +12,10 @@ def main():
                      action='post', conditions=dict(method=['POST']))
     mapper.connect('paste', '', PasteBinPage())
     mapper.connect('about', 'about', AboutPage())
-    mapper.connect('viewpaste', ':pasteid', PasteViewPage())
     mapper.connect('plain', 'plain/:pasteid', PastePlainPage())
     mapper.connect('last', 'last/:nick', LastPage())
+    mapper.connect('file', 'file/:pasteid', FilePage())
+    mapper.connect('viewpaste', ':pasteid', PasteViewPage())
     
     repo = os.path.join(os.getcwd(), 'repo')
     ds = JsonDataStore(repo)
