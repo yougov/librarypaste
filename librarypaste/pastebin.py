@@ -34,12 +34,11 @@ class PasteBinPage(object):
     def index(self):
         d = {}
         page = lookup.get_template('entry.html')
-
         d['title'] = "Library Paste"
         
         s = LexerSorter(cherrypy.request.app.config['lexers']['favorites'])
-        
         d['lexers'] = sorted([(l[0], l[1][0]) for l in get_all_lexers()], key=s.sort_key_lex)
+
         d['pre_nick'] = ('' if not 'paste-nick' in cherrypy.request.cookie 
             else cherrypy.request.cookie['paste-nick'].value)
         try:
