@@ -7,6 +7,7 @@ import datetime
 from pygments.lexers import get_all_lexers, get_lexer_by_name
 from pygments.formatters import HtmlFormatter
 from pygments import highlight
+from pygments.util import ClassNotFound
 from mako.template import Template
 from mako.lookup import TemplateLookup
 import routes
@@ -47,11 +48,12 @@ class PasteBinPage(object):
             d['short'] = True
         return page.render(**d)
 
-    def post(self, fmt=None, nick=None, code=None, file=None, makeshort=None):
+    def post(self, fmt=None, nick='', code=None, file=None, makeshort=None):
         ds = cherrypy.request.app.config['datastore']['datastore']
-        data = file.file.read()
         content = {'nick' : nick, 'time' : datetime.datetime.now(), 'makeshort' : bool(makeshort)}
-        if data:
+        if file != None:
+            data = file.file.read()
+        if file != None and data:
             filename = file.filename
             mime = file.type
             content.update({'type' : 'file', 'mime' : mime, 'filename' : filename, 'data' : data})
@@ -85,7 +87,8 @@ class PasteViewPage(object):
         page = lookup.get_template('view.html')
         try:
             paste_data = ds.retrieve(pasteid)
-        except:
+        except Exception, e:
+            print e
             raise cherrypy.NotFound("The paste '%s' could not be found." % pasteid)
         if paste_data['type'] == 'file':
             cherrypy.response.headers['Content-Type'] = paste_data['mime']
@@ -97,15 +100,20 @@ class PasteViewPage(object):
         if paste_data['fmt'] == '_':
             lexer = get_lexer_by_name('text')
         else:
-            lexer = get_lexer_by_name(paste_data['fmt'])
+            try:
+                lexer = get_lexer_by_name(paste_data['fmt'])
+            except ClassNotFound:
+                lexer = get_lexer_by_name('text')
         htmlformatter = HtmlFormatter(linenos='table')
         d['code'] = highlight(paste_data['code'], lexer, htmlformatter)
         d['pasteid'] = pasteid
         d['plainurl'] = cherrypy.url(routes.url_for(controller='plain', pasteid=pasteid))
         d['homeurl'] = cherrypy.url(routes.url_for(controller='paste', pasteid=None))
-        d['title'] = 'Paste %s%s%s on %s' % (pasteid, 
+        d['title'] = 'Paste %s%s%s%s on %s' % (
+            '%s aka ' % paste_data['shortid'] if paste_data.has_key('shortid') else '',
+            paste_data['uid'] if paste_data.has_key('uid') else pasteid, 
             ' (%s)' % paste_data['fmt'] if paste_data['fmt'] != '_' else '',
-            ' by %s' % paste_data['nick'] if paste_data['nick'] else '', 
+            ' by %s' % paste_data['nick'] if paste_data.has_key('nick') else '', 
         paste_data['time'].strftime('%b %d, %H:%M'))
         return page.render(**d)
 

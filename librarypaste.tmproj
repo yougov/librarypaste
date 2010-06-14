@@ -112,58 +112,42 @@
 			<key>caret</key>
 			<dict>
 				<key>column</key>
-				<integer>47</integer>
+				<integer>41</integer>
 				<key>line</key>
-				<integer>12</integer>
+				<integer>16</integer>
 			</dict>
-			<key>columnSelection</key>
-			<false/>
 			<key>firstVisibleColumn</key>
 			<integer>0</integer>
 			<key>firstVisibleLine</key>
 			<integer>0</integer>
-			<key>selectFrom</key>
-			<dict>
-				<key>column</key>
-				<integer>49</integer>
-				<key>line</key>
-				<integer>13</integer>
-			</dict>
-			<key>selectTo</key>
-			<dict>
-				<key>column</key>
-				<integer>47</integer>
-				<key>line</key>
-				<integer>12</integer>
-			</dict>
 		</dict>
 		<key>librarypaste/pastebin.py</key>
 		<dict>
 			<key>caret</key>
 			<dict>
 				<key>column</key>
-				<integer>366</integer>
+				<integer>20</integer>
 				<key>line</key>
-				<integer>116</integer>
+				<integer>127</integer>
 			</dict>
 			<key>firstVisibleColumn</key>
 			<integer>0</integer>
 			<key>firstVisibleLine</key>
-			<integer>99</integer>
+			<integer>118</integer>
 		</dict>
 		<key>librarypaste/static/base.css</key>
 		<dict>
 			<key>caret</key>
 			<dict>
 				<key>column</key>
-				<integer>1</integer>
+				<integer>13</integer>
 				<key>line</key>
-				<integer>8</integer>
+				<integer>35</integer>
 			</dict>
 			<key>firstVisibleColumn</key>
 			<integer>0</integer>
 			<key>firstVisibleLine</key>
-			<integer>0</integer>
+			<integer>8</integer>
 		</dict>
 		<key>librarypaste/static/pygments.css</key>
 		<dict>
@@ -184,9 +168,9 @@
 			<key>caret</key>
 			<dict>
 				<key>column</key>
-				<integer>8</integer>
+				<integer>0</integer>
 				<key>line</key>
-				<integer>3</integer>
+				<integer>5</integer>
 			</dict>
 			<key>firstVisibleColumn</key>
 			<integer>0</integer>
@@ -198,9 +182,9 @@
 			<key>caret</key>
 			<dict>
 				<key>column</key>
-				<integer>29</integer>
+				<integer>38</integer>
 				<key>line</key>
-				<integer>15</integer>
+				<integer>9</integer>
 			</dict>
 			<key>firstVisibleColumn</key>
 			<integer>0</integer>
@@ -220,6 +204,20 @@
 			<integer>0</integer>
 			<key>firstVisibleLine</key>
 			<integer>7</integer>
+		</dict>
+		<key>librarypaste/templates/file.html</key>
+		<dict>
+			<key>caret</key>
+			<dict>
+				<key>column</key>
+				<integer>0</integer>
+				<key>line</key>
+				<integer>0</integer>
+			</dict>
+			<key>firstVisibleColumn</key>
+			<integer>0</integer>
+			<key>firstVisibleLine</key>
+			<integer>0</integer>
 		</dict>
 		<key>librarypaste/templates/view.html</key>
 		<dict>
@@ -242,6 +240,7 @@
 		<string>librarypaste/datastore.py</string>
 		<string>librarypaste/templates/view.html</string>
 		<string>librarypaste/templates/about.html</string>
+		<string>librarypaste/templates/file.html</string>
 		<string>librarypaste/static/pygments.css</string>
 		<string>librarypaste/static/base.css</string>
 		<string>librarypaste/templates/base.html</string>
@@ -255,6 +254,6 @@
 	<key>showFileHierarchyDrawer</key>
 	<true/>
 	<key>windowFrame</key>
-	<string>{{405, 297}, {921, 700}}</string>
+	<string>{{703, 254}, {921, 700}}</string>
 </dict>
 </plist>

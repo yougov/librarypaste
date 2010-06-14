@@ -18,7 +18,7 @@ class JsonDataStore(DataStore):
         super(JsonDataStore, self).__init__()
         self.repo = repo
         if not os.path.exists(repo):
-            os.mkdirs(repo)
+            os.mkdir(repo)
         self.shortids = {}
 
     def _store(self, uid, content, data=None):
@@ -48,7 +48,9 @@ class JsonDataStore(DataStore):
         return last
 
     def _lookupUid(self, shortid):
-        if not self.shortids:
+        try:
+            uid = self.shortids[shortid]
+        except KeyError:
             for line in open(os.path.join(self.repo, 'shortids.txt')):
                 l1, l2 = line.strip().rsplit(None, 1)
                 self.shortids[l1] = l2
