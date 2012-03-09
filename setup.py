@@ -1,10 +1,8 @@
-from setuptools import setup
+import setuptools
 
-import librarypaste
-
-setup(
+setuptools.setup(
     name='librarypaste',
-    version=librarypaste.version,
+    use_hg_version=True,
     author='Jamie Turner',
     author_email='jamie@jamwt.com',
     url='http://bitbucket.org/chmullig/librarypaste/',
@@ -25,6 +23,9 @@ setup(
         'simplejson',
         'cherrypy',
         'routes < 1.12',
+    ],
+    setup_requires=[
+        'hgtools',
     ],
     zip_safe=False,
 )

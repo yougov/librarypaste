@@ -1,1 +1,3 @@
-version = __version__ = '0.1'
+import pkg_resources
+
+version = __version__ = pkg_resources.require('librarypaste')[0].version
