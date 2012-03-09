@@ -5,11 +5,14 @@ jsonstore.py
 """
 
 import os
-import time, datetime
+import time
+import datetime
+
 try:
     import simplejson as json
 except ImportError:
     import json
+
 from datastore import DataStore
 
 class JsonDataStore(DataStore):

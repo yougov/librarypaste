@@ -12,10 +12,12 @@ setup(
         long_description='Simple pastebin',
         license='MIT',
         packages=['librarypaste'],
-        package_dir={'librarypaste':'librarypaste'},
+        package_dir={'librarypaste': 'librarypaste'},
         include_package_data=True,
         entry_points={
-            'console_scripts':['librarypaste=librarypaste.librarypaste:main'],
+            'console_scripts': [
+                'librarypaste=librarypaste.librarypaste:main',
+            ],
         },
         install_requires=[
             'pygments',
