@@ -53,7 +53,7 @@ class PasteBinPage(object):
             data = file.file.read()
         if file != None and data:
             filename = file.filename
-            mime = file.type
+            mime = unicode(file.content_type)
             content.update({'type': 'file', 'mime': mime, 'filename': filename, 'data': data})
             imagetype = imghdr.what(filename, data)
         else:
