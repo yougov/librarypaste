@@ -48,16 +48,25 @@ class PasteBinPage(object):
 
     def post(self, fmt=None, nick='', code=None, file=None, makeshort=None):
         ds = cherrypy.request.app.config['datastore']['datastore']
-        content = {'nick': nick, 'time': datetime.datetime.now(), 'makeshort': bool(makeshort)}
-        if file != None:
-            data = file.file.read()
-        if file != None and data:
+        content = dict(
+            nick = nick,
+            time = datetime.datetime.now(),
+            makeshort = bool(makeshort),)
+        data = file != None and file.fullvalue()
+        if data:
             filename = file.filename
             mime = unicode(file.content_type)
-            content.update({'type': 'file', 'mime': mime, 'filename': filename, 'data': data})
+            content.update(
+                type = 'file',
+                mime = mime,
+                filename = filename,
+                data = data)
             imagetype = imghdr.what(filename, data)
         else:
-            content.update({'type': 'code', 'fmt': fmt, 'code': code})
+            content.update(
+                type = 'code',
+                fmt = fmt,
+                code = code,)
         (uid, shortid) = ds.store(**content)
 
         if nick:
