@@ -23,6 +23,9 @@ def main():
     ds = JsonDataStore(repo)
     # Cherrypy configuration here
     app_conf = {
+        'global': {
+            'server.socket_host': '::0',
+        },
         '/': {'request.dispatch': mapper},
         '/static': {
             'tools.staticdir.on': True,
