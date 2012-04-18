@@ -27,6 +27,7 @@ setuptools.setup(
         'simplejson',
         'cherrypy',
         'routes < 1.12',
+        'PyYAML',
     ] + py26_reqs,
     setup_requires=[
         'hgtools',
