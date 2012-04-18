@@ -33,7 +33,9 @@ class PasteBinPage(object):
     def index(self):
         d = {}
         page = lookup.get_template('entry.html')
-        d['title'] = "Library Paste"
+        brand_name = cherrypy.request.app.config['branding']['name']
+        add_branding(d)
+        d['title'] = brand_name + " Paste"
 
         s = LexerSorter(cherrypy.request.app.config['lexers']['favorites'])
         d['lexers'] = sorted([(l[0], l[1][0]) for l in get_all_lexers()], key=s.sort_key_lex)
@@ -91,6 +93,7 @@ class PasteViewPage(object):
     def index(self, pasteid=None):
         ds = cherrypy.request.app.config['datastore']['datastore']
         d = {}
+        add_branding(d)
         page = lookup.get_template('view.html')
         try:
             paste_data = ds.retrieve(pasteid)
@@ -143,6 +146,7 @@ class PastePlainPage(object):
 class FilePage(object):
     def index(self, pasteid=''):
         d = {}
+        add_branding(d)
         page = lookup.get_template('file.html')
         d['title'] = "File link for %s" % pasteid
         d['link'] = cherrypy.url(routes.url_for(controller='viewpaste', pasteid=pasteid))
@@ -151,6 +155,7 @@ class FilePage(object):
 class AboutPage(object):
     def index(self):
         d = {}
+        add_branding(d)
         page = lookup.get_template('about.html')
         d['title'] = 'About Library Paste'
         d['about'] = '''
@@ -162,3 +167,9 @@ class AboutPage(object):
         <p>If you'd like your own, Library Paste is easy to setup. It's written in python using cherrypy, you can download the code at the bitbucket account listed above. If you have any feedback, questions or comments please send them along, via bitbucket, <a href="http://twitter.com/chmullig" alt="@chmullig on twitter">@chmullig</a> or chmullig@gmail.com.</p>
         '''
         return page.render(**d)
+
+def add_branding(context):
+    context.update(
+        brand_name = cherrypy.request.app.config['branding']['name'],
+        logo_src = cherrypy.request.app.config['branding']['logo source'],
+    )

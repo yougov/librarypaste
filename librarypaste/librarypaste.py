@@ -35,6 +35,10 @@ def main():
         'repo': {'path': repo},
         'datastore': {'datastore': ds, 'type': 'json'},
         'lexers': {'favorites': ['python']},
+        'branding': {
+            'name': 'Library',
+            'logo source': '/static/librarypaste.png',
+        }
     }
 
     cherrypy.tree.mount(root=None, config=app_conf)
