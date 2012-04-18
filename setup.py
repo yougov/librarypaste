@@ -2,7 +2,7 @@ import sys
 
 import setuptools
 
-py26_reqs = ['argparse'] if sys.version_info < (2,7) else []
+py26_reqs = ['argparse', 'importlib'] if sys.version_info < (2,7) else []
 
 setuptools.setup(
     name='librarypaste',

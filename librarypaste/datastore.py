@@ -8,6 +8,7 @@ Copyright (c) 2010 __MyCompanyName__. All rights reserved.
 """
 
 import uuid
+import importlib
 from string import letters, digits
 from random import choice
 
@@ -16,6 +17,26 @@ def shortkey():
     middle = firstlast + list('-_')
     return ''.join((choice(firstlast), choice(middle), choice(middle), choice(middle), choice(firstlast)))
 
+def init_datastore(config):
+    """
+    Take the config definition and initialize the datastore.
+
+    The config must contain either a 'datastore' parameter, which
+    will be simply returned, or
+    must contain a 'factory' which is a callable or entry
+    point definition. The callable should take the remainder of
+    the params in config as kwargs and return a DataStore instance.
+    """
+    if 'datastore' in config:
+        # the datastore has already been initialized, just use it.
+        return config['datastore']
+    factory = config.pop('factory')
+    if isinstance(factory, basestring):
+        "a string like 'package.module:Class'"
+        module_name, _, factory_name = factory.partition(':')
+        module = importlib.import_module(module_name)
+        factory = getattr(module, factory_name)
+    return factory(**config)
 
 class DataStore(object):
     """Implements a datastore using an arbitrary backend. """

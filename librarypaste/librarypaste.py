@@ -7,8 +7,8 @@ import argparse
 import yaml
 import cherrypy
 
-import jsonstore
-from pastebin import (BASE, PasteBinPage, PasteViewPage, LastPage,
+from . import datastore
+from .pastebin import (BASE, PasteBinPage, PasteViewPage, LastPage,
     PastePlainPage, FilePage, AboutPage)
 
 def get_args():
@@ -45,8 +45,6 @@ def main():
     mapper.connect('file', 'file/:pasteid', FilePage())
     mapper.connect('viewpaste', ':pasteid', PasteViewPage())
 
-    repo = os.path.join(os.getcwd(), 'repo')
-    ds = jsonstore.JsonDataStore(repo)
     # Cherrypy configuration here
     app_conf = {
         'global': {
@@ -57,8 +55,10 @@ def main():
             'tools.staticdir.on': True,
             'tools.staticdir.dir': os.path.join(BASE, 'static'),
         },
-        'repo': {'path': repo},
-        'datastore': {'datastore': ds, 'type': 'json'},
+        'datastore': {
+            'factory': 'librarypaste.jsonstore:JsonDataStore',
+            'repo': os.path.join(os.getcwd(), 'repo'),
+        },
         'lexers': {'favorites': ['python']},
         'branding': {
             'name': 'Library',
@@ -69,6 +69,11 @@ def main():
     app = cherrypy.tree.mount(root=None)
     app.merge(app_conf)
     map(app.merge, args.configs)
+
+    # afte merging all the configs, initialize the datastore.
+    app.config['datastore'].update(
+        datastore = datastore.init_datastore(app.config['datastore']),
+    )
 
     cherrypy.quickstart(None, '', config=app.config)
 
