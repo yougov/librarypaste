@@ -2,6 +2,7 @@
 # encoding: utf-8
 
 import os
+import argparse
 
 import cherrypy
 
@@ -9,7 +10,14 @@ import jsonstore
 from pastebin import (BASE, PasteBinPage, PasteViewPage, LastPage,
     PastePlainPage, FilePage, AboutPage)
 
+def get_args():
+    parser = argparse.ArgumentParser()
+    parser.add_argument('-c', '--config', dest="configs",
+        default=[], action="append", help="config file")
+    return parser.parse_args()
+
 def main():
+    args = get_args()
     mapper = cherrypy.dispatch.RoutesDispatcher()
     mapper.connect('paste', '', PasteBinPage(),
         action='post', conditions=dict(method=['POST']))
@@ -41,8 +49,11 @@ def main():
         }
     }
 
-    cherrypy.tree.mount(root=None, config=app_conf)
-    cherrypy.quickstart(None, '', config=app_conf)
+    app = cherrypy.tree.mount(root=None)
+    app.merge(app_conf)
+    map(app.merge, args.configs)
+
+    cherrypy.quickstart(None, '', config=app.config)
 
 if __name__ == '__main__':
     '''

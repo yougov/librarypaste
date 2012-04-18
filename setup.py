@@ -1,4 +1,8 @@
+import sys
+
 import setuptools
+
+py26_reqs = ['argparse'] if sys.version_info < (2,7) else []
 
 setuptools.setup(
     name='librarypaste',
@@ -23,7 +27,7 @@ setuptools.setup(
         'simplejson',
         'cherrypy',
         'routes < 1.12',
-    ],
+    ] + py26_reqs,
     setup_requires=[
         'hgtools',
     ],
