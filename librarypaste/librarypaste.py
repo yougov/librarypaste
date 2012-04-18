@@ -35,22 +35,19 @@ def load_yaml_env(env_var_name):
 
 def main():
     args = get_args()
-    mapper = cherrypy.dispatch.RoutesDispatcher()
-    mapper.connect('paste', '', PasteBinPage(),
-        action='post', conditions=dict(method=['POST']))
-    mapper.connect('paste', '', PasteBinPage())
-    mapper.connect('about', 'about', AboutPage())
-    mapper.connect('plain', 'plain/:pasteid', PastePlainPage())
-    mapper.connect('last', 'last/:nick', LastPage())
-    mapper.connect('file', 'file/:pasteid', FilePage())
-    mapper.connect('viewpaste', ':pasteid', PasteViewPage())
+
+    root = PasteBinPage()
+    root.about = AboutPage()
+    root.plain = PastePlainPage()
+    root.last = LastPage()
+    root.file = FilePage()
+    root.default = PasteViewPage()
 
     # Cherrypy configuration here
     app_conf = {
         'global': {
             'server.socket_host': '::0',
         },
-        '/': {'request.dispatch': mapper},
         '/static': {
             'tools.staticdir.on': True,
             'tools.staticdir.dir': os.path.join(BASE, 'static'),
@@ -70,12 +67,12 @@ def main():
     app.merge(app_conf)
     map(app.merge, args.configs)
 
-    # afte merging all the configs, initialize the datastore.
+    # after merging all the configs, initialize the datastore.
     app.config['datastore'].update(
         datastore = datastore.init_datastore(app.config['datastore']),
     )
 
-    cherrypy.quickstart(None, '', config=app.config)
+    cherrypy.quickstart(root, '', config=app.config)
 
 if __name__ == '__main__':
     '''

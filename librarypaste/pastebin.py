@@ -8,7 +8,6 @@ from pygments.formatters import HtmlFormatter
 from pygments import highlight
 from pygments.util import ClassNotFound
 from mako.lookup import TemplateLookup
-import routes
 import imghdr
 
 BASE = os.path.abspath(os.path.dirname(__file__))
@@ -30,7 +29,7 @@ class LexerSorter(object):
 
 class PasteBinPage(object):
 
-    def index(self):
+    def form(self):
         d = {}
         page = lookup.get_template('entry.html')
         brand_name = cherrypy.request.app.config['branding']['name']
@@ -48,7 +47,10 @@ class PasteBinPage(object):
             d['short'] = True
         return page.render(**d)
 
-    def post(self, fmt=None, nick='', code=None, file=None, makeshort=None):
+    @cherrypy.expose
+    def index(self, fmt=None, nick='', code=None, file=None, makeshort=None):
+        if not cherrypy.request.method == 'POST':
+            return self.form()
         ds = cherrypy.request.app.config['datastore']['datastore']
         content = dict(
             nick = nick,
@@ -85,12 +87,13 @@ class PasteBinPage(object):
             cherrypy.response.cookie['paste-short']['expires'] = 60 * 60 * 24 * 30  # store cookies for 30 days
 
         if content['type'] == 'file' and not imagetype:
-            raise cherrypy.HTTPRedirect(cherrypy.url(routes.url_for('file', pasteid=redirid)))
+            raise cherrypy.HTTPRedirect(cherrypy.url('file/'+redirid))
         else:
-            raise cherrypy.HTTPRedirect(cherrypy.url(routes.url_for('viewpaste', pasteid=redirid)))
+            raise cherrypy.HTTPRedirect(cherrypy.url(redirid))
 
 class PasteViewPage(object):
-    def index(self, pasteid=None):
+    @cherrypy.expose
+    def default(self, pasteid=None):
         ds = cherrypy.request.app.config['datastore']['datastore']
         d = {}
         add_branding(d)
@@ -117,8 +120,8 @@ class PasteViewPage(object):
         htmlformatter = HtmlFormatter(linenos='table')
         d['code'] = highlight(paste_data['code'], lexer, htmlformatter)
         d['pasteid'] = pasteid
-        d['plainurl'] = cherrypy.url(routes.url_for(controller='plain', pasteid=pasteid))
-        d['homeurl'] = cherrypy.url(routes.url_for(controller='paste', pasteid=None))
+        d['plainurl'] = cherrypy.url('plain/' + pasteid)
+        d['homeurl'] = cherrypy.url('')
         d['title'] = 'Paste %s%s%s%s on %s' % (
             '%s aka ' % paste_data['shortid'] if 'shortid' in paste_data else '',
             paste_data['uid'] if 'uid' in paste_data else pasteid,
@@ -127,32 +130,40 @@ class PasteViewPage(object):
         paste_data['time'].strftime('%b %d, %H:%M'))
         return page.render(**d)
 
+    exposed=True
+
+    def __call__(self, pasteid=None):
+        return self.default(pasteid)
+
 class LastPage(object):
-    def index(self, nick=''):
+    @cherrypy.expose
+    def default(self, nick=''):
         ds = cherrypy.request.app.config['datastore']['datastore']
         last = ds.lookup(nick)
-        if last:
-            raise cherrypy.HTTPRedirect(cherrypy.url(routes.url_for('viewpaste', pasteid=last)))
-        else:
+        if not last:
             raise cherrypy.NotFound(nick)
+        raise cherrypy.HTTPRedirect(cherrypy.url('/'+last))
 
 class PastePlainPage(object):
-    def index(self, pasteid=None):
+    @cherrypy.expose
+    def default(self, pasteid=None):
         ds = cherrypy.request.app.config['datastore']['datastore']
         paste_data = ds.retrieve(pasteid)
         cherrypy.response.headers['Content-Type'] = 'text/plain'
         return paste_data['code']
 
 class FilePage(object):
-    def index(self, pasteid=''):
+    @cherrypy.expose
+    def default(self, pasteid=''):
         d = {}
         add_branding(d)
         page = lookup.get_template('file.html')
         d['title'] = "File link for %s" % pasteid
-        d['link'] = cherrypy.url(routes.url_for(controller='viewpaste', pasteid=pasteid))
+        d['link'] = cherrypy.url('/' + pasteid)
         return page.render(**d)
 
 class AboutPage(object):
+    @cherrypy.expose
     def index(self):
         d = {}
         add_branding(d)

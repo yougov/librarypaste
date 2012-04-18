@@ -26,7 +26,6 @@ setuptools.setup(
         'Mako',
         'simplejson',
         'cherrypy',
-        'routes < 1.12',
         'PyYAML',
     ] + py26_reqs,
     setup_requires=[
