@@ -5,8 +5,9 @@ import os
 
 import cherrypy
 
-from pastebin import BASE, PasteBinPage, PasteViewPage, LastPage, PastePlainPage, FilePage, AboutPage
-from jsonstore import JsonDataStore
+import jsonstore
+from pastebin import (BASE, PasteBinPage, PasteViewPage, LastPage,
+    PastePlainPage, FilePage, AboutPage)
 
 def main():
     mapper = cherrypy.dispatch.RoutesDispatcher()
@@ -20,7 +21,7 @@ def main():
     mapper.connect('viewpaste', ':pasteid', PasteViewPage())
 
     repo = os.path.join(os.getcwd(), 'repo')
-    ds = JsonDataStore(repo)
+    ds = jsonstore.JsonDataStore(repo)
     # Cherrypy configuration here
     app_conf = {
         'global': {
