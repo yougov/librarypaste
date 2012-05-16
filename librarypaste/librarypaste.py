@@ -52,10 +52,6 @@ def main():
             'tools.staticdir.on': True,
             'tools.staticdir.dir': os.path.join(BASE, 'static'),
         },
-        'datastore': {
-            'factory': 'librarypaste.jsonstore:JsonDataStore',
-            'repo': os.path.join(os.getcwd(), 'repo'),
-        },
         'lexers': {'favorites': ['python']},
         'branding': {
             'name': 'Library',
@@ -66,6 +62,11 @@ def main():
     app = cherrypy.tree.mount(root=None)
     app.merge(app_conf)
     map(app.merge, args.configs)
+
+    app.config.setdefault('datastore', dict(
+        factory = 'librarypaste.jsonstore:JsonDataStore',
+        repo = os.path.join(os.getcwd(), 'repo'),
+    ))
 
     # after merging all the configs, initialize the datastore.
     app.config['datastore'].update(
