@@ -9,6 +9,7 @@ Copyright (c) 2010 __MyCompanyName__. All rights reserved.
 
 import uuid
 import importlib
+import abc
 from string import letters, digits
 from random import choice
 
@@ -39,37 +40,59 @@ def init_datastore(config):
     return factory(**config)
 
 class DataStore(object):
-    """Implements a datastore using an arbitrary backend. """
+    """
+    Abstract base class describing a datastore backend.
+    """
+    __metaclass__ = abc.ABCMeta
+
     def __init__(self, *args, **kwargs):
         pass
 
+    @abc.abstractmethod
     def _store(self, uid, content, data):
-        """Store the given dict of content at uid. Nothing returned."""
-        raise NotImplementedError
+        """
+        Store the given dict of content at uid. Nothing returned.
+        """
 
+    @abc.abstractmethod
     def _storeLog(self, nick, time, uid):
-        """Adds the nick & uid to the log for a given time/order. No return."""
-        raise NotImplementedError
+        """
+        Adds the nick & uid to the log for a given time/order. No return.
+        """
 
+    @abc.abstractmethod
     def _retrieve(self, uid):
-        """Return a dict with the contents of the paste, including the raw
-        data, if any, as the key 'data'. Must pass in uid, not shortid."""
-        raise NotImplementedError
+        """
+        Return a dict with the contents of the paste, including the raw
+        data, if any, as the key 'data'. Must pass in uid, not shortid.
+        """
 
+    @abc.abstractmethod
     def lookup(self, nick):
-        """Looks for the most recent paste by a given nick.
-        Returns the uid or None"""
-        raise NotImplementedError
+        """
+        Looks for the most recent paste by a given nick.
+        Return the uid or None
+        """
 
-    def store(self, type, nick, time, fmt=None, code=None, filename=None, mime=None, data=None, makeshort=True):
-        """Store code or a file. Returns a tuple containing the uid and shortid"""
+    @abc.abstractmethod
+    def _lookupUid(self, short_uid):
+        """
+        Given a short UID, return the equivalent long UID.
+        """
+
+    def store(self, type, nick, time, fmt=None, code=None, filename=None,
+            mime=None, data=None, makeshort=True):
+        """
+        Store code or a file. Returns a tuple containing the uid and shortid
+        """
         uid = str(uuid.uuid4())
         if makeshort:
             shortid = shortkey()
         else:
             shortid = None
 
-        temp = {'uid': uid, 'shortid': shortid, 'type': type, 'nick': nick, 'time': time,
+        temp = {'uid': uid, 'shortid': shortid, 'type': type, 'nick': nick,
+            'time': time,
             'fmt': fmt, 'code': code,
             'filename': filename, 'mime': mime}
         paste = dict(
