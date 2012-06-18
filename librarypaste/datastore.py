@@ -16,7 +16,8 @@ from random import choice
 def shortkey():
     firstlast = list(letters + digits)
     middle = firstlast + list('-_')
-    return ''.join((choice(firstlast), choice(middle), choice(middle), choice(middle), choice(firstlast)))
+    return ''.join((choice(firstlast), choice(middle), choice(middle),
+        choice(middle), choice(firstlast)))
 
 def init_datastore(config):
     """
