@@ -49,7 +49,7 @@ class PasteBinPage(object):
 
     @cherrypy.expose
     def index(self, fmt=None, nick='', code=None, file=None, makeshort=None):
-        if not cherrypy.request.method == 'POST':
+        if cherrypy.request.method != 'POST':
             return self.form()
         ds = cherrypy.request.app.config['datastore']['datastore']
         content = dict(

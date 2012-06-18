@@ -72,10 +72,9 @@ class DataStore(object):
         temp = {'uid': uid, 'shortid': shortid, 'type': type, 'nick': nick, 'time': time,
             'fmt': fmt, 'code': code,
             'filename': filename, 'mime': mime}
-        paste = {}
-        for k, v in temp.items():
-            if v:
-                paste[k] = v
+        paste = dict(
+            (k, v) for (k, v) in temp.iteritems() if v
+        )
         self._store(uid, paste, data)
         if nick:
             self._storeLog(nick, time, uid)
