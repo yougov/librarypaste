@@ -7,11 +7,7 @@ jsonstore.py
 import os
 import time
 import datetime
-
-try:
-    import simplejson as json
-except ImportError:
-    import json
+import json
 
 from datastore import DataStore
 

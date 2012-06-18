@@ -24,7 +24,6 @@ setuptools.setup(
     install_requires=[
         'pygments',
         'Mako',
-        'simplejson',
         'cherrypy',
         'PyYAML',
     ] + py26_reqs,
