@@ -29,9 +29,14 @@ class DataStoreTest(object):
 		The datastore instance under test
 		"""
 
-	def test__store(self):
+	def test__store_code(self):
 		uid = 'some-id'
-		content = dict(baz='some-content')
-		data = dict(foo='bar')
-		res = self.datastore._store(uid, content, data)
+		res = self.datastore._store(uid, self.code_content)
+		assert res is None
+
+	def test__store_file(self):
+		uid = 'file-id'
+		file_content = self.file_content.copy()
+		data = file_content.pop('data')
+		res = self.datastore._store(uid, file_content, data)
 		assert res is None
