@@ -30,17 +30,18 @@ class JsonDataStore(DataStore):
         fd.write(json.dumps(content))
         fd.close()
         if data:
-            fd = open(os.path.join(self.repo, '%s.raw' % uid), 'wb')
-            fd.write(data)
-            fd.close()
+            with open(os.path.join(self.repo, '%s.raw' % uid), 'wb') as fd:
+                fd.write(data)
         try:
             self.shortids[content['shortid']] = uid
-            open(os.path.join(self.repo, 'shortids.txt'), 'a').write('%s %s\n' % (content['shortid'], uid))
+            with open(os.path.join(self.repo, 'shortids.txt'), 'a') as f:
+                f.write('%s %s\n' % (content['shortid'], uid))
         except KeyError:
             pass
 
     def _storeLog(self, nick, time, uid):
-        open(os.path.join(self.repo, 'log.txt'), 'a').write('%s %s\n' % (nick, uid))
+        with open(os.path.join(self.repo, 'log.txt'), 'a') as f:
+            f.write('%s %s\n' % (nick, uid))
 
     def lookup(self, nick):
         last = None
@@ -64,8 +65,10 @@ class JsonDataStore(DataStore):
         return uid
 
     def _retrieve(self, uid):
-        paste = json.loads(open(os.path.join(self.repo, uid), 'rb').read())
+        with open(os.path.join(self.repo, uid), 'rb') as f:
+            paste = json.loads(f.read())
         if paste['type'] == 'file':
-            paste['data'] = open(os.path.join(self.repo, '%s.raw' % uid), 'rb').read()
+            with open(os.path.join(self.repo, '%s.raw' % uid), 'rb') as f:
+                paste['data'] = f.read()
         paste['time'] = datetime.datetime.fromtimestamp(paste['time'])
         return paste
