@@ -64,9 +64,10 @@ class JsonDataStore(DataStore):
     def _retrieve(self, uid):
         with open(os.path.join(self.repo, uid), 'rb') as f:
             paste = json.loads(f.read())
-        if paste['type'] == 'file':
+        if paste.get('type', None) == 'file':
             with open(os.path.join(self.repo, '%s.raw' % uid), 'rb') as f:
                 paste['data'] = f.read()
+        paste.setdefault('type', 'file' if paste.get('data') else 'code')
         paste['time'] = datetime.datetime.fromtimestamp(paste['time'])
         return paste
 
