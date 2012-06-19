@@ -63,7 +63,10 @@ class JsonDataStore(DataStore):
 
     def _retrieve(self, uid):
         with open(os.path.join(self.repo, uid), 'rb') as f:
-            paste = json.loads(f.read())
+            val = f.read()
+        if not val:
+            raise ValueError("empty paste")
+        paste = json.loads(val)
         if paste.get('type', None) == 'file':
             with open(os.path.join(self.repo, '%s.raw' % uid), 'rb') as f:
                 paste['data'] = f.read()
