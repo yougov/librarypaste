@@ -1,1 +1,2 @@
 librarypaste>=1.4
+pymongo
