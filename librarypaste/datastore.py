@@ -6,7 +6,9 @@ datastore.py
 Created by Chris Mulligan on 2010-05-09.
 Copyright (c) 2010 __MyCompanyName__. All rights reserved.
 """
+from __future__ import print_function
 
+import sys
 import uuid
 import importlib
 import abc
@@ -126,6 +128,12 @@ class DataStore(object):
         Copy all records from source_datastore to dest_datastore
         """
         for uid in source_datastore.list():
-            paste = source_datastore._retrieve(uid)
+            try:
+                paste = source_datastore._retrieve(uid)
+            except Exception as exc:
+                print("{exc.__class__} occurred on {uid}: {exc}"
+                    .format(**vars()),
+                    file=sys.stderr)
+                continue
             data = paste.pop('data', None)
             dest_datastore._store(uid, paste, data)
