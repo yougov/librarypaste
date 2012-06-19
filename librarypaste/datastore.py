@@ -131,9 +131,15 @@ class DataStore(object):
             try:
                 paste = source_datastore._retrieve(uid)
             except Exception as exc:
-                print("{exc.__class__} occurred on {uid}: {exc}"
+                print("{exc.__class__} occurred retrieving {uid}: {exc}"
                     .format(**vars()),
                     file=sys.stderr)
                 continue
             data = paste.pop('data', None)
-            dest_datastore._store(uid, paste, data)
+            try:
+                dest_datastore._store(uid, paste, data)
+            except Exception as exc:
+                print("{exc.__class__} occurred storing {uid}: {exc}"
+                    .format(**vars()),
+                    file=sys.stderr)
+                continue
