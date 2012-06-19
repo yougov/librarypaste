@@ -5,10 +5,17 @@ from datastore import DataStore
 
 class MongoDBDataStore(pymongo.Connection, DataStore):
     db_name = 'librarypaste'
-
     @property
     def db(self):
         return self[self.db_name]
+
+    @classmethod
+    def from_uri(cls, uri):
+        store = cls(uri)
+        uri_p = pymongo.uri_parser.parse_uri(uri)
+        if uri_p['database']:
+            store.db_name = uri_p['database']
+        return store
 
     def _store(self, uid, content, data=None):
         """Store the given dict of content at uid. Nothing returned."""

@@ -10,7 +10,7 @@ class TestMongoDBDataStore(DataStoreTest):
 	@classmethod
 	def setup_class(cls):
 		try:
-			cls.datastore = mongostore.MongoDBDataStore(
+			cls.datastore = mongostore.MongoDBDataStore.from_uri(
 				'mongodb://localhost/librarypaste-test')
 		except pymongo.errors.AutoReconnect as e:
 			pytest.skip("Local MongoDB not available ({msg})".format(
@@ -19,4 +19,4 @@ class TestMongoDBDataStore(DataStoreTest):
 	@classmethod
 	def teardown_class(cls):
 		if cls.datastore:
-			cls.datastore.drop_database()
+			cls.datastore.drop_database(cls.datastore.db_name)
