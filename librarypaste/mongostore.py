@@ -22,7 +22,7 @@ class MongoDBDataStore(pymongo.Connection, DataStore):
         doc = dict(uid=uid)
         if data:
             gfs = gridfs.GridFS(self.db)
-            id = gfs.put(data)
+            id = gfs.put(data, encoding='utf-8')
             doc.update(data_id=id)
         doc.update(content)
         self.db.pastes.save(doc)
@@ -41,7 +41,7 @@ class MongoDBDataStore(pymongo.Connection, DataStore):
         if 'data_id' in doc:
             data_id = doc.pop('data_id')
             gfs = gridfs.GridFS(self.db)
-            doc.update(data = gfs.get(data_id).read())
+            doc.update(data = gfs.get(data_id).read().decode('utf-8'))
         return doc
 
     def lookup(self, nick):
