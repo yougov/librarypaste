@@ -34,10 +34,10 @@ def init_datastore(config):
         return config['datastore']
     factory = config.pop('factory')
     if isinstance(factory, basestring):
-        "a string like 'package.module:Class'"
+        "a string like 'package.module:Class.classmethod'"
         module_name, _, factory_name = factory.partition(':')
         module = importlib.import_module(module_name)
-        factory = getattr(module, factory_name)
+        factory = eval(factory_name, module.__dict__)
     return factory(**config)
 
 class DataStore(object):
