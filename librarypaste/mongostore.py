@@ -4,9 +4,11 @@ import bson
 from datastore import DataStore
 
 class MongoDBDataStore(pymongo.Connection, DataStore):
-    def _store(self, uid, content, data):
+    def _store(self, uid, content, data=None):
         """Store the given dict of content at uid. Nothing returned."""
-        doc = dict(uid=uid, data=bson.Binary(data))
+        doc = dict(uid=uid)
+        if data:
+            doc.update(data=bson.Binary(data))
         doc.update(content)
         self.librarypaste.pastes.save(doc)
 
