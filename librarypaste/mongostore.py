@@ -32,3 +32,8 @@ class MongoDBDataStore(pymongo.Connection, DataStore):
             return next(recs)['uid']
         except StopIteration:
             pass
+
+    def _lookupUid(self, shortid):
+        query = dict(shortid=shortid)
+        rec = self.librarypaste.pastes.find_one(query)
+        return rec['uid']
