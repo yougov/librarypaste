@@ -81,6 +81,12 @@ class DataStore(object):
         Given a short UID, return the equivalent long UID.
         """
 
+    @abc.abstractmethod
+    def list(self):
+        """
+        Generate all stored UIDs.
+        """
+
     def store(self, type, nick, time, fmt=None, code=None, filename=None,
             mime=None, data=None, makeshort=True):
         """

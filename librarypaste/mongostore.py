@@ -59,3 +59,6 @@ class MongoDBDataStore(pymongo.Connection, DataStore):
         query = dict(shortid=shortid)
         rec = self.db.pastes.find_one(query)
         return rec['uid']
+
+    def list(self):
+        return (doc['uid'] for doc in self.db.pastes.find(fields=['uid']))

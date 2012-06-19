@@ -4,6 +4,7 @@
 jsonstore.py
 """
 
+import re
 import os
 import time
 import datetime
@@ -68,3 +69,11 @@ class JsonDataStore(DataStore):
                 paste['data'] = f.read()
         paste['time'] = datetime.datetime.fromtimestamp(paste['time'])
         return paste
+
+    def list(self):
+        uid_pattern = re.compile(
+            '^[0-9a-f]{8}(-[0-9a-f]{4}){3}-[0-9a-f]{12}$')
+        return (name
+            for name in os.listdir(self.repo)
+            if uid_pattern.match(name)
+        )
