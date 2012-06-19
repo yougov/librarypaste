@@ -119,3 +119,13 @@ class DataStore(object):
         else:
             uid = id
         return self._retrieve(uid)
+
+    @staticmethod
+    def migrate(dest_datastore, source_datastore):
+        """
+        Copy all records from source_datastore to dest_datastore
+        """
+        for uid in source_datastore.list():
+            paste = source_datastore._retrieve(uid)
+            data = paste.pop('data', None)
+            dest_datastore._store(uid, paste, data)
