@@ -1,5 +1,5 @@
 import pymongo
-import bson
+import gridfs
 
 from datastore import DataStore
 
@@ -21,7 +21,9 @@ class MongoDBDataStore(pymongo.Connection, DataStore):
         """Store the given dict of content at uid. Nothing returned."""
         doc = dict(uid=uid)
         if data:
-            doc.update(data=bson.Binary(data))
+            gfs = gridfs.GridFS(self.db)
+            id = gfs.put(data)
+            doc.update(data_id=id)
         doc.update(content)
         self.db.pastes.save(doc)
 
@@ -35,7 +37,12 @@ class MongoDBDataStore(pymongo.Connection, DataStore):
         """Return a dict with the contents of the paste, including the raw
         data, if any, as the key 'data'. Must pass in uid, not shortid."""
         query = dict(uid=uid)
-        return self.db.pastes.find_one(query)
+        doc = self.db.pastes.find_one(query)
+        if 'data_id' in doc:
+            data_id = doc.pop('data_id')
+            gfs = gridfs.GridFS(self.db)
+            doc.update(data = gfs.get(data_id).read())
+        return doc
 
     def lookup(self, nick):
         """Looks for the most recent paste by a given nick.
