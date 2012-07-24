@@ -40,3 +40,9 @@ class DataStoreTest(object):
 		data = file_content.pop('data')
 		res = self.datastore._store(uid, file_content, data)
 		assert res is None
+
+	def test__retrieve_file(self):
+		uid = 'file-id'
+		expected_content = self.file_content.copy()
+		res = self.datastore._retrieve(uid)
+		assert res == expected_content
