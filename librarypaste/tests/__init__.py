@@ -45,4 +45,7 @@ class DataStoreTest(object):
 		uid = 'file-id'
 		expected_content = self.file_content.copy()
 		res = self.datastore._retrieve(uid)
+		for key in list(res):
+			if not key in expected_content:
+				del res[key]
 		assert res == expected_content
