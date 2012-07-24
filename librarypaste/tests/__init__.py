@@ -6,7 +6,10 @@ import pkg_resources
 class DataStoreTest(object):
 	common_content = dict(
 		nick = 'nick',
-		time = datetime.datetime.now(),
+		time = datetime.datetime.now().replace(
+			# some tests fail at the microsecond precision (jsonstore)
+			microsecond=0,
+		),
 		makeshort = True,
 	)
 	code_content = common_content.copy()
