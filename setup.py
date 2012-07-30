@@ -29,6 +29,10 @@ setuptools.setup(
     ] + py26_reqs,
     setup_requires=[
         'hgtools',
+        'pytest-runner',
+    ],
+    tests_require=[
+        'pytest',
     ],
     zip_safe=False,
 )
