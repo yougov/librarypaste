@@ -3,12 +3,14 @@ import os
 import datetime
 
 import cherrypy
+import pkg_resources
 from pygments.lexers import get_all_lexers, get_lexer_by_name
 from pygments.formatters import HtmlFormatter
 from pygments import highlight
 from pygments.util import ClassNotFound
 from mako.lookup import TemplateLookup
 import imghdr
+
 
 try:
     unicode
