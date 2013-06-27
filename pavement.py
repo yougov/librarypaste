@@ -5,4 +5,3 @@ def build():
     """
     TODO: upload ygpaste.png to CDN here.
     """
-
