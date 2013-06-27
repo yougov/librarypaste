@@ -10,6 +10,11 @@ from pygments.util import ClassNotFound
 from mako.lookup import TemplateLookup
 import imghdr
 
+try:
+    unicode
+except NameError:
+    unicode = str
+
 BASE = os.path.abspath(os.path.dirname(__file__))
 
 lookup = TemplateLookup(directories=[os.path.join(BASE, 'templates')])
@@ -56,7 +61,7 @@ class PasteBinPage(object):
             nick = nick,
             time = datetime.datetime.now(),
             makeshort = bool(makeshort),)
-        data = file != None and file.fullvalue()
+        data = file is not None and file.fullvalue()
         if data:
             filename = file.filename
             mime = unicode(file.content_type)
@@ -100,8 +105,8 @@ class PasteViewPage(object):
         page = lookup.get_template('view.html')
         try:
             paste_data = ds.retrieve(pasteid)
-        except Exception, e:
-            print e
+        except Exception as e:
+            print(e)
             raise cherrypy.NotFound("The paste '%s' could not be found." % pasteid)
         if paste_data['type'] == 'file':
             cherrypy.response.headers['Content-Type'] = paste_data['mime']
@@ -109,7 +114,9 @@ class PasteViewPage(object):
             cherrypy.response.headers['filename'] = paste_data['filename']
             return paste_data['data']
 
-        d['linenums'] = '\n'.join([str(x) for x in xrange(1, paste_data['code'].count('\n') + 2)])
+        d['linenums'] = '\n'.join(
+            [str(x) for x in range(1, paste_data['code'].count('\n') + 2)]
+        )
         if paste_data['fmt'] == '_':
             lexer = get_lexer_by_name('text')
         else:
@@ -127,7 +134,7 @@ class PasteViewPage(object):
             paste_data['uid'] if 'uid' in paste_data else pasteid,
             ' (%s)' % paste_data['fmt'] if paste_data['fmt'] != '_' else '',
             ' by %s' % paste_data['nick'] if 'nick' in paste_data else '',
-        paste_data['time'].strftime('%b %d, %H:%M'))
+            paste_data['time'].strftime('%b %d, %H:%M'))
         return page.render(**d)
 
     exposed=True
