@@ -176,7 +176,7 @@ class AboutPage(object):
     def index(self):
         d = {}
         add_branding(d)
-        info, = pkg_resources.require('librarypaste')
+        info = pkg_resources.require('librarypaste')[0]
         page = lookup.get_template('about.html')
         d['title'] = 'About Library Paste'
         d['version'] = info.version
