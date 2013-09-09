@@ -1,1 +1,1 @@
-web: env/bin/librarypaste --config port-from-env.conf --yaml-config-env APP_SETTINGS_YAML
+web: librarypaste --config port-from-env.conf --yaml-config $APP_SETTINGS_YAML
