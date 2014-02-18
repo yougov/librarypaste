@@ -7,8 +7,8 @@ py26_reqs = ['argparse', 'importlib'] if sys.version_info < (2,7) else []
 setuptools.setup(
     name='librarypaste',
     use_hg_version=dict(increment='0.1'),
-    author='Jamie Turner',
-    author_email='jamie@jamwt.com',
+    author='YouGov, Plc.',
+    author_email='open-source@yougov.com',
     url='http://bitbucket.org/chmullig/librarypaste/',
     description='Simple pastebin',
     long_description='Simple pastebin',
