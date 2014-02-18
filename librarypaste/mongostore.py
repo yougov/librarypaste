@@ -1,7 +1,7 @@
 import pymongo
 import gridfs
 
-from datastore import DataStore
+from .datastore import DataStore
 
 class MongoDBDataStore(pymongo.Connection, DataStore):
     db_name = 'librarypaste'
