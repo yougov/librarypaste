@@ -9,7 +9,7 @@ setuptools.setup(
     use_hg_version=dict(increment='0.1'),
     author='YouGov, Plc.',
     author_email='open-source@yougov.com',
-    url='http://bitbucket.org/chmullig/librarypaste/',
+    url='http://bitbucket.org/jaraco/librarypaste/',
     description='Simple pastebin',
     long_description='Simple pastebin',
     license='MIT',
