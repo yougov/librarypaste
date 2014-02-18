@@ -12,11 +12,11 @@ import sys
 import uuid
 import importlib
 import abc
-from string import letters, digits
+from string import ascii_letters, digits
 from random import choice
 
 def shortkey():
-    firstlast = list(letters + digits)
+    firstlast = list(ascii_letters + digits)
     middle = firstlast + list('-_')
     return ''.join((choice(firstlast), choice(middle), choice(middle),
         choice(middle), choice(firstlast)))
