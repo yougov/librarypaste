@@ -61,7 +61,7 @@ class JsonDataStore(DataStore):
         return uid
 
     def _retrieve(self, uid):
-        with open(os.path.join(self.repo, uid), 'rb') as f:
+        with open(os.path.join(self.repo, uid), 'r') as f:
             val = f.read()
         if not val:
             raise ValueError("empty paste")
