@@ -34,7 +34,7 @@ class LexerSorter(object):
         return key
 
 
-class PasteBinPage(object):
+class Server(object):
 
     def form(self):
         d = {}
@@ -98,7 +98,6 @@ class PasteBinPage(object):
         else:
             raise cherrypy.HTTPRedirect(cherrypy.url(redirid))
 
-class PasteViewPage(object):
     @cherrypy.expose
     def default(self, pasteid=None):
         ds = cherrypy.request.app.config['datastore']['datastore']
@@ -139,31 +138,23 @@ class PasteViewPage(object):
             paste_data['time'].strftime('%b %d, %H:%M'))
         return page.render(**d)
 
-    exposed=True
-
-    def __call__(self, pasteid=None):
-        return self.default(pasteid)
-
-class LastPage(object):
     @cherrypy.expose
-    def default(self, nick=''):
+    def last(self, nick=''):
         ds = cherrypy.request.app.config['datastore']['datastore']
         last = ds.lookup(nick)
         if not last:
             raise cherrypy.NotFound(nick)
         raise cherrypy.HTTPRedirect(cherrypy.url('/'+last))
 
-class PastePlainPage(object):
     @cherrypy.expose
-    def default(self, pasteid=None):
+    def plain(self, pasteid=None):
         ds = cherrypy.request.app.config['datastore']['datastore']
         paste_data = ds.retrieve(pasteid)
         cherrypy.response.headers['Content-Type'] = 'text/plain'
         return paste_data['code']
 
-class FilePage(object):
     @cherrypy.expose
-    def default(self, pasteid=''):
+    def file(self, pasteid=''):
         d = {}
         add_branding(d)
         page = lookup.get_template('file.html')
@@ -171,9 +162,8 @@ class FilePage(object):
         d['link'] = cherrypy.url('/' + pasteid)
         return page.render(**d)
 
-class AboutPage(object):
     @cherrypy.expose
-    def index(self):
+    def about(self):
         d = {}
         add_branding(d)
         info = pkg_resources.require('librarypaste')[0]

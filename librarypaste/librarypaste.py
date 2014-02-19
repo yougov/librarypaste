@@ -8,8 +8,7 @@ import yaml
 import cherrypy
 
 from . import datastore
-from .pastebin import (BASE, PasteBinPage, PasteViewPage, LastPage,
-    PastePlainPage, FilePage, AboutPage)
+from .pastebin import BASE, Server
 
 def get_args():
     parser = argparse.ArgumentParser()
@@ -35,13 +34,6 @@ def load_yaml_env(env_var_name):
 
 def main():
     args = get_args()
-
-    root = PasteBinPage()
-    root.about = AboutPage()
-    root.plain = PastePlainPage()
-    root.last = LastPage()
-    root.file = FilePage()
-    root.default = PasteViewPage()
 
     # Cherrypy configuration here
     app_conf = {
@@ -73,7 +65,7 @@ def main():
         datastore = datastore.init_datastore(app.config['datastore']),
     )
 
-    cherrypy.quickstart(root, '', config=app.config)
+    cherrypy.quickstart(Server(), '', config=app.config)
 
 if __name__ == '__main__':
     '''
