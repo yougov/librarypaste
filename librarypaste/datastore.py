@@ -15,6 +15,8 @@ import abc
 from string import ascii_letters, digits
 from random import choice
 
+import six
+
 def shortkey():
     firstlast = list(ascii_letters + digits)
     middle = firstlast + list('-_')
@@ -35,7 +37,7 @@ def init_datastore(config):
         # the datastore has already been initialized, just use it.
         return config['datastore']
     factory = config.pop('factory')
-    if isinstance(factory, basestring):
+    if isinstance(factory, six.string_types):
         "a string like 'package.module:Class.classmethod'"
         module_name, _, factory_name = factory.partition(':')
         module = importlib.import_module(module_name)
@@ -105,7 +107,7 @@ class DataStore(object):
             'fmt': fmt, 'code': code,
             'filename': filename, 'mime': mime}
         paste = dict(
-            (k, v) for (k, v) in temp.iteritems() if v
+            (k, v) for (k, v) in six.iteritems(temp) if v
         )
         self._store(uid, paste, data)
         if nick:

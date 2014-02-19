@@ -26,6 +26,7 @@ setuptools.setup(
         'Mako',
         'cherrypy',
         'PyYAML',
+        'six',
     ] + py26_reqs,
     setup_requires=[
         'hgtools',
