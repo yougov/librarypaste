@@ -14,6 +14,7 @@ from .datastore import DataStore
 
 class JsonDataStore(DataStore):
     """Stores using json encoded into files"""
+
     def __init__(self, repo):
         super(JsonDataStore, self).__init__()
         self.repo = repo
@@ -29,9 +30,11 @@ class JsonDataStore(DataStore):
             with open(os.path.join(self.repo, '%s.raw' % uid), 'wb') as fd:
                 fd.write(data)
         try:
+            short_id_fn = os.path.join(self.repo, 'shortids.txt')
             self.shortids[content['shortid']] = uid
-            with open(os.path.join(self.repo, 'shortids.txt'), 'a') as f:
-                f.write('%s %s\n' % (content['shortid'], uid))
+            sid = '%s %s\n' % (content['shortid'], uid)
+            with open(short_id_fn, 'a') as short_id_file:
+                short_id_file.write(sid)
         except KeyError:
             pass
 
