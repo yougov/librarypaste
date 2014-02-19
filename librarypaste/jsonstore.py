@@ -23,9 +23,8 @@ class JsonDataStore(DataStore):
 
     def _store(self, uid, content, data=None):
         content['time'] = time.mktime(content['time'].timetuple())
-        fd = open(os.path.join(self.repo, uid), 'wb')
-        fd.write(json.dumps(content))
-        fd.close()
+        with open(os.path.join(self.repo, uid), 'w') as fd:
+            json.dump(content, fd)
         if data:
             with open(os.path.join(self.repo, '%s.raw' % uid), 'wb') as fd:
                 fd.write(data)
