@@ -48,8 +48,8 @@ class MongoDBDataStore(pymongo.Connection, DataStore):
         """Looks for the most recent paste by a given nick.
         Returns the uid or None"""
         query = dict(nick=nick)
-        order = dict(time=pymongo.DESCENDING)
-        recs = self.db.pastes.find(query).order(order).limit(1)
+        order = 'time', pymongo.DESCENDING
+        recs = self.db.pastes.find(query).sort(order).limit(1)
         try:
             return next(recs)['uid']
         except StopIteration:
