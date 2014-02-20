@@ -1,2 +1,2 @@
-librarypaste>=1.6.3
+librarypaste>=1.7
 pymongo
