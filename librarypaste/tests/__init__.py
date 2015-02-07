@@ -14,10 +14,12 @@ class DataStoreTest(object):
 	)
 	code_content = common_content.copy()
 	file_content = common_content.copy()
+	code_b = pkg_resources.resource_string('librarypaste', 'pastebin.py')
+	code = code_b.decode('utf-8')
 	code_content.update(
 		type='code',
 		fmt='python',
-		code=pkg_resources.resource_string('librarypaste', 'pastebin.py'),
+		code=code,
 	)
 	file_content.update(
 		type='file',
