@@ -34,6 +34,7 @@ setuptools.setup(
     ],
     tests_require=[
         'pytest',
+        'pymongo',
     ],
     zip_safe=False,
 )
