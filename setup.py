@@ -35,6 +35,7 @@ setuptools.setup(
     tests_require=[
         'pytest',
         'pymongo',
+        'jaraco.test',
     ],
     zip_safe=False,
 )
