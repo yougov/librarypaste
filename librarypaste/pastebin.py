@@ -36,6 +36,10 @@ class LexerSorter(object):
 
 class Server(object):
 
+    _cp_config = {
+        'tools.proxy.on': True,
+    }
+
     def form(self):
         d = {}
         page = lookup.get_template('entry.html')
