@@ -110,9 +110,9 @@ class Server(object):
             cherrypy.response.headers['filename'] = paste_data['filename']
             return paste_data['data']
 
-        d['linenums'] = '\n'.join(
-            [str(x) for x in range(1, paste_data['code'].count('\n') + 2)]
-        )
+        total_lines = paste_data['code'].count('\n') + 1
+        line_nums = map(str, range(1, total_lines + 1))
+        d['linenums'] = '\n'.join(line_nums)
         if paste_data['fmt'] == '_':
             lexer = get_lexer_by_name('text')
         else:
