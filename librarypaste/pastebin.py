@@ -1,5 +1,6 @@
 import os
 import datetime
+import imghdr
 
 import cherrypy
 import pkg_resources
@@ -8,7 +9,6 @@ from pygments.formatters import HtmlFormatter
 from pygments import highlight
 from pygments.util import ClassNotFound
 from mako.lookup import TemplateLookup
-import imghdr
 
 
 BASE = os.path.abspath(os.path.dirname(__file__))
