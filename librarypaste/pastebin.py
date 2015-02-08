@@ -11,11 +11,6 @@ from mako.lookup import TemplateLookup
 import imghdr
 
 
-try:
-    unicode
-except NameError:
-    unicode = str
-
 BASE = os.path.abspath(os.path.dirname(__file__))
 
 lookup = TemplateLookup(directories=[os.path.join(BASE, 'templates')])
@@ -65,7 +60,7 @@ class Server(object):
         data = file is not None and file.fullvalue()
         if data:
             filename = file.filename
-            mime = unicode(file.content_type)
+            mime = str(file.content_type)
             content.update(
                 type = 'file',
                 mime = mime,
