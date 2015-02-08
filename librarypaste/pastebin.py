@@ -51,6 +51,9 @@ class Server(object):
     def index(self, fmt=None, nick='', code=None, file=None, makeshort=None):
         if cherrypy.request.method != 'POST':
             return self.form()
+        if code is not None and not isinstance(code, str):
+            # workaround for https://bitbucket.org/cherrypy/cherrypy/issue/1352
+            code = code.decode('utf-8')
         ds = cherrypy.request.app.config['datastore']['datastore']
         content = dict(
             nick = nick,
