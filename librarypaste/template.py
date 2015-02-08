@@ -20,4 +20,8 @@ loader = g_loader.TemplateLoader(
 )
 
 def render(page, context):
-    return loader.load(page).generate(**context).render('xhtml')
+    doc = loader.load(page).generate(**context)
+    # during rendering, disable stripping of whitespace because the
+    # pygments-rendered <pre> is wrapped in a genshi.Markup.
+    # http://genshi.edgewall.org/wiki/GenshiFaq#WhatisGenshidoingwiththewhitespaceinmymarkuptemplate
+    return doc.render('xhtml', strip_whitespace=False)
