@@ -15,7 +15,6 @@ import abc
 from string import ascii_letters, digits
 from random import choice
 
-import six
 
 def shortkey():
     firstlast = list(ascii_letters + digits)
@@ -37,7 +36,7 @@ def init_datastore(config):
         # the datastore has already been initialized, just use it.
         return config['datastore']
     factory = config.pop('factory')
-    if isinstance(factory, six.string_types):
+    if isinstance(factory, str):
         "a string like 'package.module:Class.classmethod'"
         module_name, _, factory_name = factory.partition(':')
         module = importlib.import_module(module_name)

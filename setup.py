@@ -1,8 +1,4 @@
-import sys
-
 import setuptools
-
-py26_reqs = ['argparse', 'importlib'] if sys.version_info < (2,7) else []
 
 with open('README') as readme_stream:
     long_description = readme_stream.read()
@@ -29,8 +25,7 @@ setuptools.setup(
         'Mako',
         'cherrypy',
         'PyYAML',
-        'six',
-    ] + py26_reqs,
+    ],
     setup_requires=[
         'hgtools',
         'pytest-runner',
