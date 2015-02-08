@@ -3,7 +3,7 @@ import setuptools
 with open('README.txt') as readme_stream:
     long_description = readme_stream.read()
 
-setuptools.setup(
+setup_params = dict(
     name='librarypaste',
     use_hg_version=dict(increment='0.1'),
     author='YouGov, Plc.',
@@ -36,3 +36,6 @@ setuptools.setup(
     ],
     zip_safe=False,
 )
+
+if __name__ == '__main__':
+    setuptools.setup(**setup_params)
