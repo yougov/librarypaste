@@ -16,7 +16,7 @@ setuptools.setup(
     include_package_data=True,
     entry_points={
         'console_scripts': [
-            'librarypaste=librarypaste.librarypaste:main',
+            'librarypaste=librarypaste.launch:main',
         ],
     },
     install_requires=[

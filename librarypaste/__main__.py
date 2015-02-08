@@ -1,6 +1,6 @@
 from __future__ import absolute_import
 
-import librarypaste.librarypaste
+import librarypaste.launch
 
 if __name__ == '__main__':
-	librarypaste.librarypaste.main()
+	librarypaste.launch.main()
