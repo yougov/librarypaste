@@ -10,10 +10,11 @@ from __future__ import print_function
 
 import sys
 import uuid
-import importlib
 import abc
 from string import ascii_letters, digits
 from random import choice
+
+import pkg_resources
 
 
 def shortkey():
@@ -37,10 +38,11 @@ def init_datastore(config):
         return config['datastore']
     factory = config.pop('factory')
     if isinstance(factory, str):
-        "a string like 'package.module:Class.classmethod'"
-        module_name, _, factory_name = factory.partition(':')
-        module = importlib.import_module(module_name)
-        factory = eval(factory_name, module.__dict__)
+        """
+        factory should be a string defined in the pkg_resources.EntryPoint
+        format.
+        """
+        factory = pkg_resources.EntryPoint.parse('x=' + factory).resolve()
     return factory(**config)
 
 class DataStore(object):
