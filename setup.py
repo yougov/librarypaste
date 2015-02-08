@@ -1,6 +1,6 @@
 import setuptools
 
-with open('README') as readme_stream:
+with open('README.txt') as readme_stream:
     long_description = readme_stream.read()
 
 setuptools.setup(
