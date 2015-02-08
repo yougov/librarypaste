@@ -12,8 +12,7 @@ setuptools.setup(
     description='A simple pastebin implementation in Python',
     long_description=long_description,
     license='MIT',
-    packages=['librarypaste'],
-    package_dir={'librarypaste': 'librarypaste'},
+    packages=setuptools.find_packages(),
     include_package_data=True,
     entry_points={
         'console_scripts': [
