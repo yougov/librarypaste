@@ -1,11 +1,3 @@
-#!/usr/bin/env python
-# encoding: utf-8
-"""
-datastore.py
-
-Created by Chris Mulligan on 2010-05-09.
-Copyright (c) 2010 __MyCompanyName__. All rights reserved.
-"""
 from __future__ import print_function
 
 import sys

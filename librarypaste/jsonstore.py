@@ -1,9 +1,3 @@
-#!/usr/bin/env python
-# encoding: utf-8
-"""
-jsonstore.py
-"""
-
 import re
 import os
 import time
