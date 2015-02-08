@@ -100,7 +100,7 @@ class DataStore(object):
             'fmt': fmt, 'code': code,
             'filename': filename, 'mime': mime}
         paste = dict(
-            (k, v) for (k, v) in six.iteritems(temp) if v
+            (k, v) for (k, v) in temp.items() if v
         )
         self._store(uid, paste, data)
         if nick:
