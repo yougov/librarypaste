@@ -2,18 +2,18 @@ import os
 import datetime
 import imghdr
 
+import genshi
 import cherrypy
 import pkg_resources
 from pygments.lexers import get_all_lexers, get_lexer_by_name
 from pygments.formatters import HtmlFormatter
 from pygments import highlight
 from pygments.util import ClassNotFound
-from mako.lookup import TemplateLookup
+
+from .template import render
 
 
 BASE = os.path.abspath(os.path.dirname(__file__))
-
-lookup = TemplateLookup(directories=[os.path.join(BASE, 'templates')])
 
 class LexerSorter(object):
     """Takes a list of preferred lexers, and sorts them at the top of the list."""
@@ -32,7 +32,6 @@ class Server(object):
 
     def form(self):
         d = {}
-        page = lookup.get_template('entry.html')
         brand_name = cherrypy.request.app.config['branding']['name']
         add_branding(d)
         d['title'] = brand_name + " Paste"
@@ -46,7 +45,7 @@ class Server(object):
             d['short'] = bool(int(cherrypy.request.cookie['paste-short'].value))
         except KeyError:
             d['short'] = True
-        return page.render(**d)
+        return render('entry', d)
 
     @cherrypy.expose
     def index(self, fmt=None, nick='', code=None, file=None, makeshort=None):
@@ -97,7 +96,6 @@ class Server(object):
         ds = cherrypy.request.app.config['datastore']['datastore']
         d = {}
         add_branding(d)
-        page = lookup.get_template('view.html')
         try:
             paste_data = ds.retrieve(pasteid)
         except Exception as e:
@@ -120,7 +118,8 @@ class Server(object):
             except ClassNotFound:
                 lexer = get_lexer_by_name('text')
         htmlformatter = HtmlFormatter(linenos='table')
-        d['code'] = highlight(paste_data['code'], lexer, htmlformatter)
+        code = highlight(paste_data['code'], lexer, htmlformatter)
+        d['code'] = genshi.Markup(code)
         d['pasteid'] = pasteid
         d['plainurl'] = cherrypy.url('plain/' + pasteid)
         d['homeurl'] = cherrypy.url('')
@@ -130,7 +129,7 @@ class Server(object):
             ' (%s)' % paste_data['fmt'] if paste_data['fmt'] != '_' else '',
             ' by %s' % paste_data['nick'] if 'nick' in paste_data else '',
             paste_data['time'].strftime('%b %d, %H:%M'))
-        return page.render(**d)
+        return render('view', d)
 
     @cherrypy.expose
     def last(self, nick=''):
@@ -151,20 +150,18 @@ class Server(object):
     def file(self, pasteid=''):
         d = {}
         add_branding(d)
-        page = lookup.get_template('file.html')
         d['title'] = "File link for %s" % pasteid
         d['link'] = cherrypy.url('/' + pasteid)
-        return page.render(**d)
+        return render('file', d)
 
     @cherrypy.expose
     def about(self):
         d = {}
         add_branding(d)
         info = pkg_resources.require('librarypaste')[0]
-        page = lookup.get_template('about.html')
         d['title'] = 'About Library Paste'
         d['version'] = info.version
-        return page.render(**d)
+        return render('about', d)
 
 def add_branding(context):
     context.update(

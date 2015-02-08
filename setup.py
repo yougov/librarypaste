@@ -21,7 +21,7 @@ setup_params = dict(
     },
     install_requires=[
         'pygments',
-        'Mako',
+        'genshi',
         'cherrypy',
         'PyYAML',
     ],

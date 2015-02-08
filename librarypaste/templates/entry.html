@@ -1,5 +1,13 @@
-<%inherit file="base.html"/>
+<html xmlns="http://www.w3.org/1999/xhtml"
+    xmlns:py="http://genshi.edgewall.org/"
+    xmlns:xi="http://www.w3.org/2001/XInclude">
 
+<xi:include href="base" />
+
+<head>
+</head>
+
+<body>
 
 <form method="post" enctype="multipart/form-data" accept-charset="utf-8">
 
@@ -8,11 +16,7 @@
     <label for="nick">Nickname:</label>
     <input type="text" width="15" name="nick" value="${pre_nick}" id="nick"/>
     <div class="smt_button">
-        <label for="makeshort">Use a short URL:</label><input type="checkbox" name="makeshort" id="makeshort" value="True"
-        % if short:
-            checked="checked"
-        % endif
-        />
+        <label for="makeshort">Use a short URL:</label><input type="checkbox" name="makeshort" id="makeshort" value="True" py:attrs="{'checked': 'checked'} if short else {}" />
     </div>
 </div>
 <div style="clear: both;" />
@@ -24,20 +28,21 @@
 
 <h3>Or paste in text <span class="note">Note: You may only upload a file OR add text, not both at once.</span></h3>
 <div class="form_input_row">
-% if lexers:
-    <label for="fmt">Formatting:</label>
-    <select name="fmt" id="fmt">
-        <option value="_">None (Plain Text)</option>
-        % for lex_desc, lex_id in lexers:
-            <option value="${lex_id}">${lex_desc}</option>
-        % endfor
-    </select>
-	% else:
-	<input type="hidden" name="fmt" value="_" />
-	% endif
+    <py:if test="lexers">
+        <label for="fmt">Formatting:</label>
+        <select name="fmt" id="fmt">
+            <option value="_">None (Plain Text)</option>
+            <option py:for="lex_desc, lex_id in lexers" value="${lex_id}">${lex_desc}</option>
+        </select>
+	</py:if>
+    <py:if test="not lexers">
+    	<input type="hidden" name="fmt" value="_" />
+	</py:if>
 </div>
 <div class="code_area">
     <textarea rows="20" cols="120" name="code"></textarea>
 </div>
 <input type="submit" value="Paste!" />
 </form>
+</body>
+</html>
