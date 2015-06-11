@@ -31,7 +31,7 @@ setup_params = dict(
     ],
     tests_require=[
         'pytest',
-        'pymongo',
+        'pymongo>=3',
         'jaraco.test',
     ],
     zip_safe=False,

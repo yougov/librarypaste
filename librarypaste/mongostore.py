@@ -3,7 +3,7 @@ import gridfs
 
 from .datastore import DataStore
 
-class MongoDBDataStore(pymongo.Connection, DataStore):
+class MongoDBDataStore(pymongo.MongoClient, DataStore):
     db_name = 'librarypaste'
     @property
     def db(self):
@@ -61,4 +61,4 @@ class MongoDBDataStore(pymongo.Connection, DataStore):
         return rec['uid']
 
     def list(self):
-        return (doc['uid'] for doc in self.db.pastes.find(fields=['uid']))
+        return (doc['uid'] for doc in self.db.pastes.find(projection=['uid']))
