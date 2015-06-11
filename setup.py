@@ -5,7 +5,7 @@ with open('README.txt') as readme_stream:
 
 setup_params = dict(
     name='librarypaste',
-    use_hg_version=dict(increment='0.1'),
+    use_scm_version=True,
     author='YouGov, Plc.',
     author_email='open-source@yougov.com',
     url='http://bitbucket.org/yougov/librarypaste/',
@@ -26,7 +26,7 @@ setup_params = dict(
         'PyYAML',
     ],
     setup_requires=[
-        'hgtools',
+        'setuptools_scm',
         'pytest-runner',
     ],
     tests_require=[
