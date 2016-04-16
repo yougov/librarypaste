@@ -18,12 +18,16 @@ setup_params = dict(
         'console_scripts': [
             'librarypaste=librarypaste.launch:main',
         ],
+        'pmxbot_handlers': [
+            'librarypaste = librarypaste.pmxbot',
+        ],
     },
     install_requires=[
         'pygments',
         'genshi',
         'cherrypy',
         'PyYAML',
+        'requests',
     ],
     setup_requires=[
         'setuptools_scm',
