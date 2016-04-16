@@ -11,7 +11,6 @@ setup_params = dict(
     url='http://bitbucket.org/yougov/librarypaste/',
     description='A simple pastebin implementation in Python',
     long_description=long_description,
-    license='MIT',
     packages=setuptools.find_packages(),
     include_package_data=True,
     entry_points={
@@ -39,6 +38,14 @@ setup_params = dict(
         'jaraco.test',
     ],
     zip_safe=False,
+    classifiers=[
+        'Development Status :: 5 - Production/Stable',
+        'License :: OSI Approved :: MIT License',
+        'Operating System :: POSIX',
+        'Operating System :: Microsoft :: Windows',
+        'Operating System :: MacOS :: MacOS X',
+        'Programming Language :: Python :: 3',
+    ],
 )
 
 if __name__ == '__main__':
