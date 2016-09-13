@@ -56,38 +56,44 @@ class Server(object):
             code = code.decode('utf-8')
         ds = cherrypy.request.app.config['datastore']['datastore']
         content = dict(
-            nick = nick,
-            time = datetime.datetime.now(),
-            makeshort = bool(makeshort),)
+            nick=nick,
+            time=datetime.datetime.now(),
+            makeshort=bool(makeshort),
+        )
         data = file is not None and file.fullvalue()
         if data:
             filename = file.filename
             mime = str(file.content_type)
             content.update(
-                type = 'file',
-                mime = mime,
-                filename = filename,
-                data = data)
+                type='file',
+                mime=mime,
+                filename=filename,
+                data=data,
+            )
             imagetype = imghdr.what(filename, data)
         else:
             content.update(
-                type = 'code',
-                fmt = fmt,
-                code = code,)
+                type='code',
+                fmt=fmt,
+                code=code,
+            )
         (uid, shortid) = ds.store(**content)
+
+        # store cookies for 30 days
+        expires = int(datetime.timedelta(days=30).total_seconds())
 
         if nick:
             cherrypy.response.cookie['paste-nick'] = nick
-            cherrypy.response.cookie['paste-nick']['expires'] = 60 * 60 * 24 * 30  # store cookies for 30 days
+            cherrypy.response.cookie['paste-nick']['expires'] = expires
 
         if makeshort:
             redirid = shortid
             cherrypy.response.cookie['paste-short'] = 1
-            cherrypy.response.cookie['paste-short']['expires'] = 60 * 60 * 24 * 30  # store cookies for 30 days
+            cherrypy.response.cookie['paste-short']['expires'] = expires
         else:
             redirid = uid
             cherrypy.response.cookie['paste-short'] = 0
-            cherrypy.response.cookie['paste-short']['expires'] = 60 * 60 * 24 * 30  # store cookies for 30 days
+            cherrypy.response.cookie['paste-short']['expires'] = expires
 
         if content['type'] == 'file' and not imagetype:
             raise cherrypy.HTTPRedirect(cherrypy.url('file/'+redirid))
