@@ -110,12 +110,15 @@ class DataStore(object):
     def retrieve(self, id):
         """Retrieve a paste. Returns a dictionary containing all metadata
         and the file data, if it's a file."""
+        return self._retrieve(self._resolve_id(id))
+
+    def _resolve_id(self, id):
+        """
+        Resolve a short id to a UID
+        """
         if len(id) < 10:
-            shortid = id
-            uid = self._lookupUid(shortid)
-        else:
-            uid = id
-        return self._retrieve(uid)
+            return self._lookupUid(id)
+        return id
 
     @staticmethod
     def migrate(dest_datastore, source_datastore):
