@@ -1,3 +1,9 @@
+3.5
+===
+
+Added native support for deployment on
+`Velociraptor <https://velociraptor.readthedocs.org>`_.
+
 3.4
 ===
 
