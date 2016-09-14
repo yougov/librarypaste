@@ -1,3 +1,10 @@
+3.3
+===
+
+Moved hosting to Github.
+
+Fixed issue with file handling on later versions of CherryPy.
+
 3.2
 ===
 
