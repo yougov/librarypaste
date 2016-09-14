@@ -1,3 +1,8 @@
+3.3.2
+=====
+
+Fix another issue in file handling when code is submitted.
+
 3.3.1
 =====
 
