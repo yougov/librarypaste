@@ -60,7 +60,7 @@ class Server(object):
             time=datetime.datetime.now(),
             makeshort=bool(makeshort),
         )
-        data = file is not None and file.read()
+        data = file is not None and file.file.read()
         if data:
             filename = file.filename
             mime = str(file.content_type)

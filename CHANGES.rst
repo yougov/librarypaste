@@ -1,3 +1,8 @@
+3.3.1
+=====
+
+Fix issue in file handling.
+
 3.3
 ===
 
