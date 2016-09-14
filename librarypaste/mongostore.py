@@ -44,6 +44,14 @@ class MongoDBDataStore(pymongo.MongoClient, DataStore):
             doc.update(data = gfs.get(data_id).read())
         return doc
 
+    def _delete(self, uid):
+        filter = dict(uid=uid)
+        doc = self.db.pastes.find_one_and_delete(filter)
+        if 'data_id' in doc:
+            gfs = gridfs.GridFS(self.db)
+            gfs.delete(doc['data_id'])
+        return doc
+
     def lookup(self, nick):
         """Looks for the most recent paste by a given nick.
         Returns the uid or None"""

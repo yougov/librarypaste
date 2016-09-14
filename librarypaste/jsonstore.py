@@ -70,6 +70,12 @@ class JsonDataStore(DataStore):
         paste['time'] = datetime.datetime.fromtimestamp(paste['time'])
         return paste
 
+    def _delete(self, uid):
+        os.remove(os.path.join(self.repo, uid))
+        data_fn = os.path.join(self.repo, '%s.raw' % uid)
+        os.path.exists(data_fn) and os.remove(data_fn)
+        # todo: delete any shortid
+
     def list(self):
         uid_pattern = re.compile(
             '^[0-9a-f]{8}(-[0-9a-f]{4}){3}-[0-9a-f]{12}$')

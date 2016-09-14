@@ -110,6 +110,11 @@ class Server(object):
         except Exception as e:
             print(e)
             raise cherrypy.NotFound("The paste '%s' could not be found." % pasteid)
+
+        if cherrypy.request.method == 'DELETE':
+            ds.delete(pasteid)
+            return "Deleted"
+
         if paste_data['type'] == 'file':
             cherrypy.response.headers['Content-Type'] = paste_data['mime']
             cherrypy.response.headers['Content-Disposition'] = 'inline; filename="%s"' % paste_data['filename']

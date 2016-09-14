@@ -1,3 +1,8 @@
+3.4
+===
+
+Added support for deleting pastes.
+
 3.3.2
 =====
 

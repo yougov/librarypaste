@@ -65,6 +65,18 @@ class DataStore(object):
         data, if any, as the key 'data'. Must pass in uid, not shortid.
         """
 
+    def delete(self, id):
+        """
+        Delete the paste with the indicated id.
+        """
+        return self._delete(self._resolve_id(id))
+
+    @abc.abstractmethod
+    def _delete(self, uid):
+        """
+        Delete the paste with the indicated uid.
+        """
+
     @abc.abstractmethod
     def lookup(self, nick):
         """
