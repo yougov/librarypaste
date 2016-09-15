@@ -4,13 +4,13 @@ import imghdr
 
 import genshi
 import cherrypy
-import pkg_resources
 from pygments.lexers import get_all_lexers, get_lexer_by_name
 from pygments.formatters import HtmlFormatter
 from pygments import highlight
 from pygments.util import ClassNotFound
 
 from .template import render
+import librarypaste
 
 
 BASE = os.path.abspath(os.path.dirname(__file__))
@@ -173,9 +173,8 @@ class Server(object):
     def about(self):
         d = {}
         add_branding(d)
-        info = pkg_resources.require('librarypaste')[0]
         d['title'] = 'About Library Paste'
-        d['version'] = info.version
+        d['version'] = librarypaste.__version__
         return render('about', d)
 
 
