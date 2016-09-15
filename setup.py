@@ -37,7 +37,7 @@ setup_params = dict(
         'cherrypy',
         'PyYAML',
         'requests',
-        'jaraco.functools>=1.14',
+        'jaraco.functools>=1.15',
     ],
     extras_require={
     },

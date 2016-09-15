@@ -7,6 +7,7 @@ from string import ascii_letters, digits
 from random import choice
 
 import pkg_resources
+from jaraco.functools import assign_params
 
 
 def short_key():
@@ -112,24 +113,16 @@ class DataStore(metaclass=abc.ABCMeta):
         uid = str(uuid.uuid4())
         shortid = short_key() if makeshort else None
 
-        temp = dict(
-            uid=uid,
-            shortid=shortid,
-            type=type,
-            nick=nick,
-            time=time,
-            fmt=fmt,
-            code=code,
-            filename=filename,
-            mime=mime,
-        )
-        paste = {
-            k: v for (k, v) in temp.items() if v
-        }
+        paste = assign_params(self.build_paste, locals())()
         self._store(uid, paste, data)
         if nick:
             self._storeLog(nick, time, uid)
         return uid, shortid
+
+    @staticmethod
+    def build_paste(uid, shortid, type, nick, time, fmt, code, filename, mime):
+        "Build a 'paste' object"
+        return locals()
 
     def retrieve(self, id):
         """Retrieve a paste. Returns a dictionary containing all metadata
