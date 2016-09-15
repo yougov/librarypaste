@@ -67,9 +67,3 @@ def main():
     )
 
     cherrypy.quickstart(Server(), '', config=app.config)
-
-if __name__ == '__main__':
-    '''
-    Useful for development mode
-    '''
-    main()
