@@ -39,11 +39,10 @@ def init_datastore(config):
     return factory(**config)
 
 
-class DataStore(object):
+class DataStore(metaclass=abc.ABCMeta):
     """
     Abstract base class describing a datastore backend.
     """
-    __metaclass__ = abc.ABCMeta
 
     def __init__(self, *args, **kwargs):
         pass
