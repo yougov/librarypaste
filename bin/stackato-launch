@@ -1,0 +1,9 @@
+#!/bin/sh
+
+if [ -n "$VELOCIRAPTOR_SWARM_URL" ]; then
+	# Grab config from VR and launch the process as if deployed from VR.
+	export APP_SETTINGS_YAML=settings.yaml
+	wget $VELOCIRAPTOR_SWARM_URL -O - | jq ".compiled_config" > $APP_SETTINGS_YAML
+fi
+
+librarypaste --config port-from-env.conf --yaml-config $APP_SETTINGS_YAML --config proxy-support.conf
