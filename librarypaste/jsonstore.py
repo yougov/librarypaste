@@ -80,7 +80,4 @@ class JsonDataStore(DataStore):
     def list(self):
         uid_pattern = re.compile(
             '^[0-9a-f]{8}(-[0-9a-f]{4}){3}-[0-9a-f]{12}$')
-        return (name
-            for name in os.listdir(self.repo)
-            if uid_pattern.match(name)
-        )
+        return map(uid_pattern.match, os.listdir(self.repo))
