@@ -3,15 +3,11 @@ import urllib.parse
 import requests
 import pmxbot
 from pmxbot.core import command
+from jaraco.functools import pass_none
 
 
-def _request_friendly(auth):
-	"""
-	Requests does strict type checking on the auth. If it's not a tuple, it
-	tries to call it.
-	"""
-	if auth is not None:
-		return tuple(auth)
+_request_friendly = pass_none(tuple)
+"""Requests requires that auth is a tuple or None"""
 
 
 @command()
