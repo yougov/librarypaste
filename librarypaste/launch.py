@@ -7,6 +7,7 @@ import cherrypy
 from . import datastore
 from .pastebin import BASE, Server
 
+
 def get_args():
     parser = argparse.ArgumentParser()
     parser.add_argument('-c', '--config', dest="configs",
@@ -17,17 +18,20 @@ def get_args():
         type=load_yaml_env, action="append", help="yaml config")
     return parser.parse_args()
 
+
 def load_yaml(filename):
     """
     Given a param, load the YAML config from a file.
     """
     return yaml.load(open(filename))
 
+
 def load_yaml_env(env_var_name):
     """
     Resolve the env var to a filename and load the YAML config from there.
     """
     return load_yaml(os.environ[env_var_name])
+
 
 def main():
     args = get_args()

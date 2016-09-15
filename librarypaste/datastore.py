@@ -15,6 +15,7 @@ def shortkey():
     return ''.join((choice(firstlast), choice(middle), choice(middle),
         choice(middle), choice(firstlast)))
 
+
 def init_datastore(config):
     """
     Take the config definition and initialize the datastore.
@@ -36,6 +37,7 @@ def init_datastore(config):
         """
         factory = pkg_resources.EntryPoint.parse('x=' + factory).resolve()
     return factory(**config)
+
 
 class DataStore(object):
     """

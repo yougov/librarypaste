@@ -15,6 +15,7 @@ from .template import render
 
 BASE = os.path.abspath(os.path.dirname(__file__))
 
+
 class LexerSorter(object):
     """Takes a list of preferred lexers, and sorts them at the top of the list."""
     def __init__(self, favored_languages):
@@ -176,6 +177,7 @@ class Server(object):
         d['title'] = 'About Library Paste'
         d['version'] = info.version
         return render('about', d)
+
 
 def add_branding(context):
     context.update(
