@@ -133,9 +133,7 @@ class DataStore(metaclass=abc.ABCMeta):
         """
         Resolve a short id to a UID
         """
-        if len(id) < 10:
-            return self._lookupUid(id)
-        return id
+        return self._lookupUid(id) if len(id) < 10 else id
 
     @staticmethod
     def migrate(dest_datastore, source_datastore):
