@@ -9,7 +9,14 @@ from random import choice
 import pkg_resources
 
 
-def shortkey():
+def short_key():
+    """
+    Generate a short key.
+
+    >>> key = short_key()
+    >>> len(key)
+    5
+    """
     firstlast = list(ascii_letters + digits)
     middle = firstlast + list('-_')
     return ''.join((choice(firstlast), choice(middle), choice(middle),
@@ -103,22 +110,26 @@ class DataStore(metaclass=abc.ABCMeta):
         Store code or a file. Returns a tuple containing the uid and shortid
         """
         uid = str(uuid.uuid4())
-        if makeshort:
-            shortid = shortkey()
-        else:
-            shortid = None
+        shortid = short_key() if makeshort else None
 
-        temp = {'uid': uid, 'shortid': shortid, 'type': type, 'nick': nick,
-            'time': time,
-            'fmt': fmt, 'code': code,
-            'filename': filename, 'mime': mime}
-        paste = dict(
-            (k, v) for (k, v) in temp.items() if v
+        temp = dict(
+            uid=uid,
+            shortid=shortid,
+            type=type,
+            nick=nick,
+            time=time,
+            fmt=fmt,
+            code=code,
+            filename=filename,
+            mime=mime,
         )
+        paste = {
+            k: v for (k, v) in temp.items() if v
+        }
         self._store(uid, paste, data)
         if nick:
             self._storeLog(nick, time, uid)
-        return (uid, shortid)
+        return uid, shortid
 
     def retrieve(self, id):
         """Retrieve a paste. Returns a dictionary containing all metadata
