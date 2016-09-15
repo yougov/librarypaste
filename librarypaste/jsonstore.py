@@ -54,15 +54,9 @@ class JsonDataStore(DataStore):
         return self.load_key_values('log.txt').get(nick)
 
     def _lookupUid(self, shortid):
-        try:
-            uid = self.shortids[shortid]
-        except KeyError:
+        if shortid not in self.shortids:
             self.shortids = self.load_key_values('shortids.txt')
-        try:
-            uid = self.shortids[shortid]
-        except KeyError:
-            uid = None
-        return uid
+        return self.shortids.get(shortid)
 
     def _retrieve(self, uid):
         with self.open(uid) as f:
