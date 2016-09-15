@@ -38,6 +38,7 @@ setup_params = dict(
         'PyYAML',
         'requests',
         'jaraco.functools>=1.15',
+        'more_itertools',
     ],
     extras_require={
     },

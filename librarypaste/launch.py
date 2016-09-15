@@ -3,6 +3,7 @@ import argparse
 
 import yaml
 import cherrypy
+from more_itertools.recipes import consume
 
 from . import datastore
 from .pastebin import BASE, Server
@@ -54,16 +55,16 @@ def main():
 
     app = cherrypy.tree.mount(root=None)
     app.merge(app_conf)
-    list(map(app.merge, args.configs))
+    consume(app.merge, args.configs)
 
     app.config.setdefault('datastore', dict(
-        factory = 'librarypaste.jsonstore:JsonDataStore',
-        repo = os.path.join(os.getcwd(), 'repo'),
+        factory='librarypaste.jsonstore:JsonDataStore',
+        repo=os.path.join(os.getcwd(), 'repo'),
     ))
 
     # after merging all the configs, initialize the datastore.
     app.config['datastore'].update(
-        datastore = datastore.init_datastore(app.config['datastore']),
+        datastore=datastore.init_datastore(app.config['datastore']),
     )
 
     cherrypy.quickstart(Server(), '', config=app.config)
