@@ -1,3 +1,8 @@
+3.7
+===
+
+Merge with skeleton. Tests are now invoked with tox.
+
 3.5
 ===
 
