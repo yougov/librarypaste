@@ -5,12 +5,20 @@
 
 .. image:: https://img.shields.io/pypi/dm/librarypaste.svg
 
-.. image:: https://img.shields.io/travis/jaraco/librarypaste/master.svg
-   :target: http://travis-ci.org/jaraco/librarypaste
+.. image:: https://img.shields.io/travis/yougov/librarypaste/master.svg
+   :target: http://travis-ci.org/yougov/librarypaste
 
-A Python paste bin.
+License
+=======
 
-Install using ``pip install librarypaste`` and launch with the ``librarypaste``
+License is indicated in the project metadata (typically one or more
+of the Trove classifiers). For more details, see `this explanation
+<https://github.com/jaraco/skeleton/issues/1>`_.
+
+Usage
+=====
+
+Launch with the ``librarypaste``
 command or with ``python -m librarypaste``. The library will host the service
 on ``[::0]:8080`` by default. Pass cherrypy config files on the command line
 to customize behaivor.
