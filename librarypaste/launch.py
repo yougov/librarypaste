@@ -55,7 +55,7 @@ def main():
 
     app = cherrypy.tree.mount(root=None)
     app.merge(app_conf)
-    consume(app.merge, args.configs)
+    consume(map(app.merge, args.configs))
 
     app.config.setdefault('datastore', dict(
         factory='librarypaste.jsonstore:JsonDataStore',
