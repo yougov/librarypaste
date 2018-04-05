@@ -6,6 +6,7 @@ from .datastore import DataStore
 
 class MongoDBDataStore(pymongo.MongoClient, DataStore):
     db_name = 'librarypaste'
+
     @property
     def db(self):
         return self[self.db_name]
@@ -42,7 +43,7 @@ class MongoDBDataStore(pymongo.MongoClient, DataStore):
         if 'data_id' in doc:
             data_id = doc.pop('data_id')
             gfs = gridfs.GridFS(self.db)
-            doc.update(data = gfs.get(data_id).read())
+            doc.update(data=gfs.get(data_id).read())
         return doc
 
     def _delete(self, uid):

@@ -17,7 +17,7 @@ def default_extension(loader_func):
 # Create a loader which will search in the ./templates directory for templates
 #  using a default extension.
 loader = g_loader.TemplateLoader(
-    search_path = [default_extension(g_loader.package(__name__, 'templates'))],
+    search_path=[default_extension(g_loader.package(__name__, 'templates'))],
     auto_reload=True,
 )
 

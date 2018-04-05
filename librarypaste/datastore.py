@@ -20,8 +20,10 @@ def short_key():
     """
     firstlast = list(ascii_letters + digits)
     middle = firstlast + list('-_')
-    return ''.join((choice(firstlast), choice(middle), choice(middle),
-        choice(middle), choice(firstlast)))
+    return ''.join((
+        choice(firstlast), choice(middle), choice(middle),
+        choice(middle), choice(firstlast),
+    ))
 
 
 def init_datastore(config):
@@ -105,7 +107,8 @@ class DataStore(metaclass=abc.ABCMeta):
         Generate all stored UIDs.
         """
 
-    def store(self, type, nick, time, fmt=None, code=None, filename=None,
+    def store(
+            self, type, nick, time, fmt=None, code=None, filename=None,
             mime=None, data=None, makeshort=True):
         """
         Store code or a file. Returns a tuple containing the uid and shortid
@@ -153,7 +156,8 @@ class DataStore(metaclass=abc.ABCMeta):
             try:
                 dest_datastore._store(uid, paste, data)
             except Exception as exc:
-                print("{exc.__class__.__name__} occurred storing {uid}: {exc}"
+                print(
+                    "{exc.__class__.__name__} occurred storing {uid}: {exc}"
                     .format(**vars()),
                     file=sys.stderr)
                 continue

@@ -3,6 +3,7 @@ import datetime
 
 import pkg_resources
 
+
 class DataStoreTest(object):
 	common_content = dict(
 		nick='nick',
@@ -25,9 +26,11 @@ class DataStoreTest(object):
 		type='file',
 		mime='image/png',
 		filename='librarypaste.png',
-		data=pkg_resources.resource_string('librarypaste',
+		data=pkg_resources.resource_string(
+			'librarypaste',
 			'static/librarypaste.png')
 	)
+
 	@abc.abstractproperty
 	def datastore(self):
 		"""
@@ -51,6 +54,6 @@ class DataStoreTest(object):
 		expected_content = self.file_content.copy()
 		res = self.datastore._retrieve(uid)
 		for key in list(res):
-			if not key in expected_content:
+			if key not in expected_content:
 				del res[key]
 		assert res == expected_content

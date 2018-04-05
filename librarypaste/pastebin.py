@@ -17,7 +17,9 @@ BASE = os.path.abspath(os.path.dirname(__file__))
 
 
 class LexerSorter(object):
-    """Takes a list of preferred lexers, and sorts them at the top of the list."""
+    """
+    Takes a list of preferred lexers, and sorts them at the top of the list.
+    """
     def __init__(self, favored_languages):
         self.favored_langs = [x.lower().strip() for x in favored_languages]
 
@@ -38,12 +40,15 @@ class Server(object):
         d['title'] = brand_name + " Paste"
 
         s = LexerSorter(cherrypy.request.app.config['lexers']['favorites'])
-        d['lexers'] = sorted([(l[0], l[1][0]) for l in get_all_lexers()], key=s.sort_key_lex)
+        lexers_in = ((l[0], l[1][0]) for l in get_all_lexers())
+        d['lexers'] = sorted(lexers_in, key=s.sort_key_lex)
 
-        d['pre_nick'] = ('' if not 'paste-nick' in cherrypy.request.cookie
+        d['pre_nick'] = (
+            '' if 'paste-nick' not in cherrypy.request.cookie
             else cherrypy.request.cookie['paste-nick'].value)
         try:
-            d['short'] = bool(int(cherrypy.request.cookie['paste-short'].value))
+            d['short'] = bool(int(
+                cherrypy.request.cookie['paste-short'].value))
         except KeyError:
             d['short'] = True
         return render('entry', d)
@@ -97,7 +102,7 @@ class Server(object):
             cherrypy.response.cookie['paste-short']['expires'] = expires
 
         if content['type'] == 'file' and not imagetype:
-            raise cherrypy.HTTPRedirect(cherrypy.url('file/'+redirid))
+            raise cherrypy.HTTPRedirect(cherrypy.url('file/' + redirid))
         else:
             raise cherrypy.HTTPRedirect(cherrypy.url(redirid))
 
@@ -110,7 +115,8 @@ class Server(object):
             paste_data = ds.retrieve(pasteid)
         except Exception as e:
             print(e)
-            raise cherrypy.NotFound("The paste '%s' could not be found." % pasteid)
+            raise cherrypy.NotFound(
+                "The paste '%s' could not be found." % pasteid)
 
         if cherrypy.request.method == 'DELETE':
             ds.delete(pasteid)
@@ -118,7 +124,8 @@ class Server(object):
 
         if paste_data['type'] == 'file':
             cherrypy.response.headers['Content-Type'] = paste_data['mime']
-            cherrypy.response.headers['Content-Disposition'] = 'inline; filename="%s"' % paste_data['filename']
+            cherrypy.response.headers['Content-Disposition'] = \
+                'inline; filename="%s"' % paste_data['filename']
             cherrypy.response.headers['filename'] = paste_data['filename']
             return paste_data['data']
 
@@ -139,7 +146,8 @@ class Server(object):
         d['plainurl'] = cherrypy.url('plain/' + pasteid)
         d['homeurl'] = cherrypy.url('')
         d['title'] = 'Paste %s%s%s%s on %s' % (
-            '%s aka ' % paste_data['shortid'] if 'shortid' in paste_data else '',
+            '%s aka ' % paste_data['shortid']
+            if 'shortid' in paste_data else '',
             paste_data['uid'] if 'uid' in paste_data else pasteid,
             ' (%s)' % paste_data['fmt'] if paste_data['fmt'] != '_' else '',
             ' by %s' % paste_data['nick'] if 'nick' in paste_data else '',
@@ -152,7 +160,7 @@ class Server(object):
         last = ds.lookup(nick)
         if not last:
             raise cherrypy.NotFound(nick)
-        raise cherrypy.HTTPRedirect(cherrypy.url('/'+last))
+        raise cherrypy.HTTPRedirect(cherrypy.url('/' + last))
 
     @cherrypy.expose
     def plain(self, pasteid=None):
@@ -180,6 +188,6 @@ class Server(object):
 
 def add_branding(context):
     context.update(
-        brand_name = cherrypy.request.app.config['branding']['name'],
-        logo_src = cherrypy.request.app.config['branding']['logo source'],
+        brand_name=cherrypy.request.app.config['branding']['name'],
+        logo_src=cherrypy.request.app.config['branding']['logo source'],
     )

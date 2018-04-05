@@ -4,6 +4,7 @@ import shutil
 from . import DataStoreTest
 from librarypaste import jsonstore
 
+
 class TestJSONStore(DataStoreTest):
 	@classmethod
 	def setup_class(cls):

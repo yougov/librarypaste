@@ -11,11 +11,14 @@ from .pastebin import BASE, Server
 
 def get_args():
     parser = argparse.ArgumentParser()
-    parser.add_argument('-c', '--config', dest="configs",
+    parser.add_argument(
+        '-c', '--config', dest="configs",
         default=[], action="append", help="config file")
-    parser.add_argument('--yaml-config', dest="configs",
+    parser.add_argument(
+        '--yaml-config', dest="configs",
         type=load_yaml, action="append", help="yaml config")
-    parser.add_argument('--yaml-config-env', dest="configs",
+    parser.add_argument(
+        '--yaml-config-env', dest="configs",
         type=load_yaml_env, action="append", help="yaml config")
     return parser.parse_args()
 
