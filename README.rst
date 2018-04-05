@@ -1,5 +1,5 @@
 .. image:: https://img.shields.io/pypi/v/librarypaste.svg
-:target: https://pypi.org/project/librarypaste
+   :target: https://pypi.org/project/librarypaste
 
 .. image:: https://img.shields.io/pypi/pyversions/librarypaste.svg
 
