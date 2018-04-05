@@ -1,3 +1,0 @@
-pytest >= 2.8
-pymongo>=3
-jaraco.test

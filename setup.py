@@ -3,18 +3,19 @@
 # Project skeleton maintained at https://github.com/jaraco/skeleton
 
 import io
-import sys
 
 import setuptools
 
 with io.open('README.rst', encoding='utf-8') as readme:
     long_description = readme.read()
 
-needs_wheel = {'release', 'bdist_wheel', 'dists'}.intersection(sys.argv)
-wheel = ['wheel'] if needs_wheel else []
-
 name = 'librarypaste'
-description = 'A simple pastebin implementation in Python'
+description = 'A simple pastebin implemented in Python'
+nspkg_technique = 'native'
+"""
+Does this package use "native" namespace packages or
+pkg_resources "managed" namespace packages?
+"""
 
 params = dict(
     name=name,
@@ -26,7 +27,11 @@ params = dict(
     url="https://github.com/yougov/" + name,
     packages=setuptools.find_packages(),
     include_package_data=True,
-    namespace_packages=name.split('.')[:-1],
+    namespace_packages=(
+        name.split('.')[:-1] if nspkg_technique == 'managed'
+        else []
+    ),
+    python_requires='>=3.5',
     install_requires=[
         'pygments',
         'genshi',
@@ -37,22 +42,41 @@ params = dict(
         'more_itertools',
     ],
     extras_require={
+        'testing': [
+            # upstream
+            'pytest>=3.5',
+            'pytest-sugar>=0.9.1',
+            'collective.checkdocs',
+            'pytest-flake8',
+
+            # local
+            'pymongo>=3',
+            'jaraco.test',
+        ],
+        'docs': [
+            # upstream
+            'sphinx',
+            'jaraco.packaging>=3.2',
+            'rst.linker>=1.9',
+
+            # local
+        ],
     },
     setup_requires=[
         'setuptools_scm>=1.15.0',
-    ] + wheel,
+    ],
     classifiers=[
         "Development Status :: 5 - Production/Stable",
         "Intended Audience :: Developers",
         "License :: OSI Approved :: MIT License",
-        "Programming Language :: Python :: 2.7",
         "Programming Language :: Python :: 3",
+        "Programming Language :: Python :: 3 :: only",
     ],
     entry_points={
         'console_scripts': [
             'librarypaste=librarypaste.launch:main',
         ],
-       'pmxbot_handlers': [
+        'pmxbot_handlers': [
             'librarypaste = librarypaste.pmxbot',
         ],
     },

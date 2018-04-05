@@ -1,19 +1,16 @@
 .. image:: https://img.shields.io/pypi/v/librarypaste.svg
-   :target: https://pypi.org/project/librarypaste
+:target: https://pypi.org/project/librarypaste
 
 .. image:: https://img.shields.io/pypi/pyversions/librarypaste.svg
 
-.. image:: https://img.shields.io/pypi/dm/librarypaste.svg
-
 .. image:: https://img.shields.io/travis/yougov/librarypaste/master.svg
-   :target: http://travis-ci.org/yougov/librarypaste
+   :target: https://travis-ci.org/yougov/librarypaste
 
-License
-=======
+.. .. image:: https://img.shields.io/appveyor/ci/jaraco/skeleton/master.svg
+..    :target: https://ci.appveyor.com/project/jaraco/skeleton/branch/master
 
-License is indicated in the project metadata (typically one or more
-of the Trove classifiers). For more details, see `this explanation
-<https://github.com/jaraco/skeleton/issues/1>`_.
+.. .. image:: https://readthedocs.org/projects/skeleton/badge/?version=latest
+..    :target: https://skeleton.readthedocs.io/en/latest/?badge=latest
 
 Usage
 =====
