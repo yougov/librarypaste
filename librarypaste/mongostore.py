@@ -27,7 +27,7 @@ class MongoDBDataStore(pymongo.MongoClient, DataStore):
             id = gfs.put(data, encoding='utf-8')
             doc.update(data_id=id)
         doc.update(content)
-        self.db.pastes.save(doc, w=1)
+        self.db.pastes.insert_one(doc)
 
     def _storeLog(self, nick, time, uid):
         """Adds the nick & uid to the log for a given time/order. No return."""
