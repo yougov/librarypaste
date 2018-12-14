@@ -51,7 +51,7 @@ params = dict(
 
             # local
             'pymongo>=3',
-            'jaraco.test',
+            'jaraco.mongodb',
         ],
         'docs': [
             # upstream

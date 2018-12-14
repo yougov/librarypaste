@@ -149,7 +149,7 @@ class DataStore(metaclass=abc.ABCMeta):
             except Exception as exc:
                 print(
                     "{exc.__class__.__name__} occurred retrieving {uid}: {exc}"
-                    .format(**vars()),
+                    .format(exc=exc, uid=uid),
                     file=sys.stderr)
                 continue
             data = paste.pop('data', None)
@@ -158,6 +158,6 @@ class DataStore(metaclass=abc.ABCMeta):
             except Exception as exc:
                 print(
                     "{exc.__class__.__name__} occurred storing {uid}: {exc}"
-                    .format(**vars()),
+                    .format(exc=exc, uid=uid),
                     file=sys.stderr)
                 continue
